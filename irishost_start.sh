@@ -30,5 +30,15 @@ then
     exit 1
 fi
 
+if [ !-e /etc/init/isc-dhcp-server6.override ]
+then
+ed /etc/init/isc-dhcp-server6.override << SNIP2
+a
+manual
+.
+wq
+SNIP2
+fi
+
 service isc-dhcp-server start
 exit $?
