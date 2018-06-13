@@ -11,10 +11,10 @@ then
 	exit 1
 fi
 
-apt-get update && apt-get install isc-dhcp-server || \
+apt-get -q update && apt-get -q -y install isc-dhcp-server || \
   { echo "Failed to install ISC DHCP server!" && exit 1; }
 
-cp -f $MYWD/dhcpd.conf /etc/dhcpd/dhcpd.conf || \
+cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
   { echo "Could not copy dhcp config file into place!" && exit 1; }
 
 ed /etc/default/isc-dhcp-server << SNIP
