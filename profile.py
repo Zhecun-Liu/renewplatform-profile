@@ -1,7 +1,7 @@
-"""A profile that instantiates a PC connected to two Iris radios.  The latter connected via RF.
+"""A profile that instantiates a PC connected to two Iris radios.  The radios are connected via RF cabling and switch matrix in the PhantomNet testbed.
 
 Instructions:
-None.
+The radios are each connected via a private 1Gbps link.  "iris1" should come up with address 192.168.1.101 and "iris2" should have 192.168.2.101.  These addresses are reachable by first logging in to "pc1".
 """
 
 import geni.portal as portal
@@ -22,6 +22,7 @@ request = portal.context.makeRequestRSpec()
 pc1 = request.RawPC("pc1")
 pc1.hardware_type = PCHWTYPE
 pc1.disk_image = PCIMG
+pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/irishost_start.sh"))
 ifpc1ir1 = pc1.addInterface("pc1ir1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 ifpc1ir2 = pc1.addInterface("pc1ir2", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
 
