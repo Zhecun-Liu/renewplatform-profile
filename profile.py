@@ -1,7 +1,7 @@
-"""A profile that instantiates a PC connected to two Iris radios.  The radios are connected via RF cabling and switch matrix in the PhantomNet testbed.
+"""A profile that instantiates a PC connected to a Skylark FAROS hub and connected radio chains.
 
 Instructions:
-The radios are each connected via a private 1Gbps link.  "iris1" should come up with address 192.168.1.101 and "iris2" should have 192.168.2.101.  These addresses are reachable by first logging in to "pc1".
+The Faros hub and pc are connected via a private 10Gbps link. All Iris radios and the Faros hub should come up with address between 192.168.1.101 and 192.168.1.200.  These addresses are reachable by first logging in to "pc1".
 """
 
 import geni.portal as portal
@@ -30,6 +30,7 @@ mm1.hardware_type = FAROSHWTYPE
 
 # Connect nuc1 to ir1 over the wired net
 link1 = request.Link("l1", members=[if1pc1,mm1])
+link1.bandwidth = 10 * 1000 * 1000
 
 # Print the RSpec to the enclosing page.
 portal.context.printRequestRSpec()
