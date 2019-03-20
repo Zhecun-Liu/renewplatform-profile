@@ -10,7 +10,7 @@ then
 	exit 1
 fi
 
-apt-get -q update && apt-get -q -y install isc-dhcp-server || \
+apt-get -q update && apt-get -q -y install --reinstall isc-dhcp-server || \
   { echo "Failed to install ISC DHCP server!" && exit 1; }
 
 cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
@@ -31,16 +31,11 @@ fi
 
 if [ ! -e /etc/init/isc-dhcp-server6.override ]
 then
-ed /etc/init/isc-dhcp-server6.override << SNIP2
-a
-manual
-.
-wq
-SNIP2
+    echo "manual" > /etc/init/isc-dhcp-server6.override
 fi
 
 service isc-dhcp-server start
 
-#apt-get -y install --reinstall avahi-daemon
+apt-get -y install --reinstall avahi-daemon
 
 exit $?
