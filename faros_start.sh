@@ -29,7 +29,7 @@ then
     exit 1
 fi
 
-if [ !-e /etc/init/isc-dhcp-server6.override ]
+if [ ! -e /etc/init/isc-dhcp-server6.override ]
 then
 ed /etc/init/isc-dhcp-server6.override << SNIP2
 a
@@ -41,6 +41,6 @@ fi
 
 service isc-dhcp-server start
 
-apt-get -y install --reinstall avahi-daemon
+#apt-get -y install --reinstall avahi-daemon
 
 exit $?
