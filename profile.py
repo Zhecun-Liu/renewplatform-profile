@@ -12,8 +12,7 @@ import geni.rspec.emulab as elab
 # Resource strings
 PCIMG = "urn:publicid:IDN+emulab.net+image+argos-test:soapyuhd"
 PCHWTYPE = "d430"
-IRISHWTYPE = "iris030"
-#IRISIMG = "urn:publicid:IDN+phantomnet.org+image+emulab-ops:GENERICDEV-NOVLANS"
+FAROSHWTYPE = "faros-sfp"
 
 # Create a Request object to start building the RSpec.
 request = portal.context.makeRequestRSpec()
@@ -22,30 +21,15 @@ request = portal.context.makeRequestRSpec()
 pc1 = request.RawPC("pc1")
 pc1.hardware_type = PCHWTYPE
 pc1.disk_image = PCIMG
-pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/irishost_start.sh"))
-ifpc1ir1 = pc1.addInterface("pc1ir1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-ifpc1ir2 = pc1.addInterface("pc1ir2", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
+pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/faros_start.sh"))
+if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 
-# Request an Iris SDR
-ir1 = request.RawPC("iris1")
-ir1.hardware_type = IRISHWTYPE
-#ir1.disk_image = IRISIMG
-
-# Request a second Iris SDR
-ir2 = request.RawPC("iris2")
-ir2.hardware_type = IRISHWTYPE
-#ir2.disk_image = IRISIMG
+# Request a Faros BS
+mm1 = request.RawPC("mm1")
+mm1.hardware_type = FAROSHWTYPE
 
 # Connect nuc1 to ir1 over the wired net
-link1 = request.Link("l1", members=[ifpc1ir1,ir1])
-
-# Connect nuc1 to ir2 over the wired net
-link2 = request.Link("l2", members=[ifpc1ir2,ir2])
-
-# Connect the two Iris radios over RF
-rflink1 = request.RFLink("rf1")
-rflink1.addNode(ir1)
-rflink1.addNode(ir2)
+link1 = request.Link("l1", members=[if1pc1,mm1])
 
 # Print the RSpec to the enclosing page.
 portal.context.printRequestRSpec()

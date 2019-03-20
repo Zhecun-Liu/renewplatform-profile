@@ -1,13 +1,12 @@
 #!/bin/bash
 
 IF1=`/usr/local/etc/emulab/findif -i 192.168.1.1`
-IF2=`/usr/local/etc/emulab/findif -i 192.168.2.1`
 
 MYWD=`dirname $0`
 
-if [ -z $IF1 -o -z $IF2 ]
+if [ -z $IF1 ]
 then
-	echo "Could not get interfaces for running dhcpd!"
+	echo "Could not get interface for running dhcpd!"
 	exit 1
 fi
 
@@ -19,7 +18,7 @@ cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
 
 ed /etc/default/isc-dhcp-server << SNIP
 /^INTERFACES/c
-INTERFACES="$IF1 $IF2"
+INTERFACES="$IF1"
 .
 w
 SNIP
@@ -41,4 +40,7 @@ SNIP2
 fi
 
 service isc-dhcp-server start
+
+apt-get -y install --reinstall avahi-daemon
+
 exit $?
