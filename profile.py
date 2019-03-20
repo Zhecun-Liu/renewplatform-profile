@@ -12,7 +12,7 @@ import geni.rspec.emulab as elab
 # Resource strings
 PCIMG = "urn:publicid:IDN+emulab.net+image+argos-test:soapyuhd"
 PCHWTYPE = "d430"
-FAROSHWTYPE = "faros-sfp"
+FAROSHWTYPE = "faros_sfp"
 
 # Create a Request object to start building the RSpec.
 request = portal.context.makeRequestRSpec()
