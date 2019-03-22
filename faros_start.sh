@@ -1,7 +1,6 @@
 #!/bin/bash
 
 IF1=`/usr/local/etc/emulab/findif -i 192.168.1.1`
-
 MYWD=`dirname $0`
 
 if [ -z $IF1 ]
@@ -10,8 +9,9 @@ then
 	exit 1
 fi
 
-apt-get -q update && apt-get -q -y install --reinstall isc-dhcp-server || \
-  { echo "Failed to install ISC DHCP server!" && exit 1; }
+apt-get -q update && \
+    apt-get -q -y install --reinstall isc-dhcp-server avahi-daemon || \
+    { echo "Failed to install ISC DHCP server and/or Avahi daemon!" && exit 1; }
 
 cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
   { echo "Could not copy dhcp config file into place!" && exit 1; }
@@ -34,8 +34,14 @@ then
     echo "manual" > /etc/init/isc-dhcp-server6.override
 fi
 
-service isc-dhcp-server start
+service isc-dhcp-server start || \
+    { echo "Failed to start ISC dhcpd!" && exit 1; }
 
-apt-get -y install --reinstall avahi-daemon
+cd $MYWD
+git submodule update --init || \
+    { echo "Failed to update git submodules!" && exit 1; }
+
+./renew-software/install_soapy.sh || \
+    {echo "Failed to install Soapy!" && exit 1; }
 
 exit $?
