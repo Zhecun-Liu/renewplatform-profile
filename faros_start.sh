@@ -42,6 +42,6 @@ git submodule update --init || \
     { echo "Failed to update git submodules!" && exit 1; }
 
 ./renew-software/install_soapy.sh || \
-    {echo "Failed to install Soapy!" && exit 1; }
+    { echo "Failed to install Soapy!" && exit 1; }
 
 exit $?
