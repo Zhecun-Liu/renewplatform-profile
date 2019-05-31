@@ -35,6 +35,7 @@ mm1if4 = mm1.addInterface("mm1if4")
 
 # Connect the PC to the Faros BS.
 lan1 = request.LAN("lan1")
+lan1.best_effort = True
 lan1.addInterface(if1pc1)
 lan1.addInterface(mm1if1)
 lan1.addInterface(mm1if2)
