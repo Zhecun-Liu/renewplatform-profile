@@ -19,7 +19,8 @@ request = portal.context.makeRequestRSpec()
  
 # Request a PC
 pc1 = request.RawPC("pc1")
-pc1.hardware_type = PCHWTYPE
+#pc1.hardware_type = PCHWTYPE
+pc1.component_id="pc19-meb"
 pc1.disk_image = PCIMG
 pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/faros_start.sh"))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
