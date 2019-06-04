@@ -5,7 +5,7 @@ MYWD=`dirname $0`
 
 if [ -z $IF1 ]
 then
-	echo "Could not get interface for running dhcpd!"
+	echo "Could not find interface for running dhcpd!"
 	exit 1
 fi
 
@@ -41,7 +41,14 @@ cd $MYWD
 git submodule update --init || \
     { echo "Failed to update git submodules!" && exit 1; }
 
-./renew-software/install_soapy.sh || \
+cd renew-software
+./install_soapy.sh || \
     { echo "Failed to install Soapy!" && exit 1; }
+
+./install_pylibs.sh || \
+    { echo "Failed to install Python libraries!" && exit 1; }
+
+./install_cclibs.sh || \
+    { echo "Failed to install C libraries!" && exit 1; }
 
 exit $?
