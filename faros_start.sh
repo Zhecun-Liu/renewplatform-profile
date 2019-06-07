@@ -38,7 +38,7 @@ service isc-dhcp-server start || \
     { echo "Failed to start ISC dhcpd!" && exit 1; }
 
 cd $MYWD
-git submodule update --init || \
+git submodule update --init --remote || \
     { echo "Failed to update git submodules!" && exit 1; }
 
 cd renew-software
