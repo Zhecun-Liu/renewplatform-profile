@@ -13,6 +13,7 @@ import geni.rspec.emulab as elab
 PCIMG = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU16-64-STD"
 PCHWTYPE = "d840"
 FAROSHWTYPE = "faros_sfp"
+IRISHWTYPE = "iris030"
 
 # Create a Request object to start building the RSpec.
 request = portal.context.makeRequestRSpec()
@@ -29,19 +30,33 @@ if1pc1.bandwidth = 40 * 1000 * 1000
 # Request a Faros BS.
 mm1 = request.RawPC("mm1")
 mm1.hardware_type = FAROSHWTYPE
-mm1if1 = mm1.addInterface("mm1if1")
-mm1if2 = mm1.addInterface("mm1if2")
-mm1if3 = mm1.addInterface("mm1if3")
-mm1if4 = mm1.addInterface("mm1if4")
+mm1if1 = mm1.addInterface("if1")
+mm1if2 = mm1.addInterface("if2")
+mm1if3 = mm1.addInterface("if3")
+#mm1if4 = mm1.addInterface("if4")
 
-# Connect the PC to the Faros BS.
+# Request an Iris client.
+ir1 = request.RawPC("ir1")
+ir1.hardware_type = IRISHWTYPE
+ir1.component_id = "iris03"  # in Mike's office
+ir1if1 = ir1.addInterface("if1")
+
+# Request another Iris client.
+ir2 = request.RawPC("ir2")
+ir2.hardware_type = IRISHWTYPE
+ir2.component_id = "iris04"  # in Jon's office
+ir2if1 = ir2.addInterface("if1")
+
+# Connect the PC, BS, and Iris clients to a LAN
 lan1 = request.LAN("lan1")
 lan1.setNoBandwidthShaping()
 lan1.addInterface(if1pc1)
 lan1.addInterface(mm1if1)
 lan1.addInterface(mm1if2)
 lan1.addInterface(mm1if3)
-lan1.addInterface(mm1if4)
+#lan1.addInterface(mm1if4)
+lan1.addInterface(ir1if1)
+lan1.addInterface(ir2if1)
 
 # Print the RSpec to the enclosing page.
 portal.context.printRequestRSpec()
