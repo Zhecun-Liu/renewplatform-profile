@@ -1,7 +1,7 @@
-"""A profile that instantiates PCs connected to a Skylark FAROS hub and connected radio chains.
+"""A profile that instantiates a PC connected to a Skylark FAROS hub and connected radio chains.
 
 Instructions:
-The Faros hub and PCs are connected via a private 10Gbps link. All Iris radios and the Faros hub should come up with address between 192.168.1.101 and 192.168.1.200.  These addresses are reachable by first logging in to "pc0".
+The Faros hub and pc are connected via a private 10Gbps link. All Iris radios and the Faros hub should come up with address between 192.168.1.101 and 192.168.1.200.  These addresses are reachable by first logging in to "pc1".
 """
 
 import geni.portal as portal
@@ -10,22 +10,41 @@ import geni.rspec.pg as pg
 import geni.rspec.emulab as elab
 
 # Resource strings
-PCIMG = None
+PCIMG = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU16-64-STD"
+PCHWTYPE = "d840"
 FAROSHWTYPE = "faros_sfp"
 IRISHWTYPE = "iris030"
 
+#
+# Profile parameters.
+#
 pc = portal.Context()
+pc.defineParameter("USESHARED", "Use shared vlan?",
+                   portal.ParameterType.BOOLEAN, True,
+                   longDescription="Check box to connect all devices (including the PC) to a shared vlan.")
+params = pc.bindParameters()
+pc.verifyParameters()
 
 # Create a Request object to start building the RSpec.
-request = pc.makeRequestRSpec()
+request = portal.context.makeRequestRSpec()
+ 
+# Request a PC
+pc1 = request.RawPC("pc1")
+#pc1.hardware_type = PCHWTYPE
+pc1.component_id="pc19-meb"
+pc1.disk_image = PCIMG
+bs = request.RemoteBlockstore( "matlab1", "/usr/local/MATLAB" )
+bs.dataset = "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
+bs.rwclone = True
+bslink = request.Link( "dslink1" )
+bslink.addInterface( pc1.addInterface( "dsiface1" ) )
+bslink.addInterface( bs.interface )
+bslink.vlan_tagging = True
+bslink.best_effort = True
+pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/faros_start.sh"))
+if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+if1pc1.bandwidth = 40 * 1000 * 1000
 
-pc.defineParameter( "n", "Number of compute nodes",
-                    portal.ParameterType.INTEGER, 1 )
-
-pc.defineParameter( "type", "Compute node hardware type",
-                    portal.ParameterType.STRING, "d430" )
-
-params = pc.bindParameters()
 
 # Request a Faros BS.
 mm1 = request.RawPC("mm1")
@@ -49,7 +68,9 @@ ir2if1 = ir2.addInterface("if1")
 
 # Connect the PC, BS, and Iris clients to a LAN
 lan1 = request.LAN("lan1")
+lan1.vlan_tagging = False
 lan1.setNoBandwidthShaping()
+lan1.addInterface(if1pc1)
 lan1.addInterface(mm1if1)
 lan1.addInterface(mm1if2)
 lan1.addInterface(mm1if3)
@@ -57,23 +78,9 @@ lan1.addInterface(mm1if3)
 lan1.addInterface(ir1if1)
 lan1.addInterface(ir2if1)
 
-# Request PCs
-for i in range( params.n ):
-    pc = request.RawPC( "pc" + str( i ) )
-    pc.hardware_type = params.type
-    pc.disk_image = PCIMG
-    bs = request.RemoteBlockstore( "matlab" + str( i ), "/usr/local/MATLAB" )
-    bs.dataset = "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
-    bs.rwclone = True
-    bslink = request.Link( "dslink" + str( i ) )
-    bslink.addInterface( pc.addInterface( "dsiface" + str( i ) ) )
-    bslink.addInterface( bs.interface )
-    bslink.vlan_tagging = True
-    bslink.best_effort = True
-                         
-    pc.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/faros_start.sh"))
-    iface = pc.addInterface( "iface" + str( i ), pg.IPv4Address("192.168.1." + str( i + 1 ), "255.255.255.0"))
-    lan1.addInterface( iface )
+# Use shared vlan?
+if params.USESHARED:
+    lan1.connectSharedVlan("faros-shared")
 
 # Print the RSpec to the enclosing page.
 portal.context.printRequestRSpec()
