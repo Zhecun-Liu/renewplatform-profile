@@ -1,7 +1,7 @@
-"""A profile that instantiates a PC connected to a Skylark FAROS hub and connected radio chains.
+"""This profile instantiates a d840 machine connected to a Skylark FAROS massive MIMO base station, comprised of Faros hub and its connected Iris radio chains as well as two Iris clients. The PC boots with Ubuntu 16.04 and includes a MATLAB installation that could be used to run experiments on Faros with RENEWLab design flows. For more information on RENEWLab, see https://docs.renew-wireless.org
 
 Instructions:
-The Faros hub and pc are connected via a private 10Gbps link. All Iris radios and the Faros hub should come up with address between 192.168.1.101 and 192.168.1.200.  These addresses are reachable by first logging in to "pc1".
+The Faros hub and pc are connected via a private 10Gbps link. All Iris radios and the Faros hub should come up with address between 192.168.1.101 and 192.168.1.200. These addresses are reachable by first logging in to "pc1". For access to the required PC type and massive MIMO radio devices, please contact support@powderwireless.net
 """
 
 import geni.portal as portal
