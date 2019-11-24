@@ -18,12 +18,10 @@ IRISHWTYPE = "iris030"
 #
 # Profile parameters.
 #
-pc = portal.Context()
-pc.defineParameter("USESHARED", "Use shared vlan?",
-                   portal.ParameterType.BOOLEAN, True,
-                   longDescription="Check box to connect all devices (including the PC) to a shared vlan.")
-params = pc.bindParameters()
-pc.verifyParameters()
+
+#pc = portal.Context()
+#params = pc.bindParameters()
+#pc.verifyParameters()
 
 # Create a Request object to start building the RSpec.
 request = portal.context.makeRequestRSpec()
@@ -77,10 +75,6 @@ lan1.addInterface(mm1if3)
 #lan1.addInterface(mm1if4)
 lan1.addInterface(ir1if1)
 lan1.addInterface(ir2if1)
-
-# Use shared vlan?
-if params.USESHARED:
-    lan1.connectSharedVlan("faros-shared")
 
 # Print the RSpec to the enclosing page.
 portal.context.printRequestRSpec()
