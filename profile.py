@@ -17,11 +17,11 @@ A step-by-step procedure to run simple demos is as follows:
 
 	`cd /local/repository/renew-software/PYTHON/DEMOS`
 
-- Run example 1, bursty oscilloscope and spectrum analyzer demo: 
+- Run example 1 (bursty oscilloscope and spectrum analyzer demo): 
 
 	`sudo python3 SISO_RX.py --serial RF3E000143`
 
-- Run example 2, sending and receiving a sinewave burst between two Iris devices: 
+- Run example 2 (sending and receiving a sinewave burst between two Iris devices in tdd mode): 
 
 	`python3 SISO_TXRX_TDD.py`
 
