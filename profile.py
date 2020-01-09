@@ -37,6 +37,7 @@ import geni.portal as portal
 import geni.urn as urn
 import geni.rspec.pg as pg
 import geni.rspec.emulab as elab
+import geni.rspec.emulab.spectrum as spectrum
 
 # Resource strings
 PCIMG = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU16-64-STD"
@@ -47,14 +48,44 @@ IRISHWTYPE = "iris030"
 #
 # Profile parameters.
 #
+pc = portal.Context()
 
-#pc = portal.Context()
-#params = pc.bindParameters()
-#pc.verifyParameters()
+# Frequency/spectrum parameters
+portal.context.defineStructParameter(
+    "freq_ranges", "Range", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="Frequency ranges for over-the-air operation.",
+    members=[
+        portal.Parameter(
+            "freq_min",
+            "Frequency Min",
+            portal.ParameterType.BANDWIDTH,
+            2496.0,
+            longDescription="Values are rounded to the nearest kilohertz."
+        ),
+        portal.Parameter(
+            "freq_max",
+            "Frequency Max",
+            portal.ParameterType.BANDWIDTH,
+            2506.0,
+            longDescription="Values are rounded to the nearest kilohertz."
+        ),
+    ])
+
+# Bind and verify parameters.
+params = pc.bindParameters()
+
+for i, frange in enumerate(params.freq_ranges):
+    if frange.freq_max - frange.freq_min < 1:
+        perr = portal.ParameterError("Minimum and maximum frequencies must be separated by at least 1 MHz", ["freq_ranges[%d].freq_min" % i, "freq_ranges[%d].freq_max" % i])
+        portal.context.reportError(perr)
+
+pc.verifyParameters()
 
 # Create a Request object to start building the RSpec.
-request = portal.context.makeRequestRSpec()
- 
+request = pc.makeRequestRSpec()
+
 # Request a PC
 pc1 = request.RawPC("pc1")
 #pc1.hardware_type = PCHWTYPE
@@ -70,7 +101,7 @@ bslink.vlan_tagging = True
 bslink.best_effort = True
 pc1.addService(pg.Execute(shell="sh", command="/usr/bin/sudo /local/repository/faros_start.sh"))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-if1pc1.bandwidth = 40 * 1000 * 1000
+if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
 
 
 # Request a Faros BS.
@@ -105,5 +136,9 @@ lan1.addInterface(mm1if3)
 lan1.addInterface(ir1if1)
 lan1.addInterface(ir2if1)
 
+# Add frequency request(s)
+for frange in params.freq_ranges:
+    request.requestSpectrum(frange.freq_min, frange.freq_max, 100)
+
 # Print the RSpec to the enclosing page.
-portal.context.printRequestRSpec()
+pc.printRequestRSpec()
