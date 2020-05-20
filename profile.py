@@ -88,8 +88,8 @@ request = pc.makeRequestRSpec()
 
 # Request a PC
 pc1 = request.RawPC("pc1")
-#pc1.hardware_type = PCHWTYPE
-pc1.component_id="pc19-meb"
+pc1.hardware_type = PCHWTYPE
+#pc1.component_id="pc19-meb"
 pc1.disk_image = PCIMG
 bs = request.RemoteBlockstore( "matlab1", "/usr/local/MATLAB" )
 bs.dataset = "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
