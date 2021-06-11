@@ -86,14 +86,14 @@ pc.defineStructParameter(
             "freq_min",
             "Frequency Min",
             portal.ParameterType.BANDWIDTH,
-            2496.0,
+            3550.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
         portal.Parameter(
             "freq_max",
             "Frequency Max",
             portal.ParameterType.BANDWIDTH,
-            2506.0,
+            3560.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
     ])
