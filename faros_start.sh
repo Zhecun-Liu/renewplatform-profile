@@ -40,6 +40,8 @@ sudo service isc-dhcp-server start || \
     { echo "Failed to start ISC dhcpd!" && exit 1; }
 
 cd $SCRATCH
+sudo chown ${USER}:${GROUP} .
+sudo chmod 775 .
 git clone $REPO || \
     { echo "Failed to clone git repository: $REPO" && exit 1; }
 
