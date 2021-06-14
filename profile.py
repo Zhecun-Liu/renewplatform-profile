@@ -58,7 +58,7 @@ REMDS_TYPES = [("readwrite", "Read-Write (persistent)"),
 MMIMO_ARRAYS = ["", ("mmimo-ac", "Anechoic chamber array"),
                 ("mmimo1", "Honors rooftop array")]
 
-LAB_CLIENTS = ["", ("iris1-ac", "Anechoic chamber clients")]
+LAB_CLIENTS = ["", ("irisclients-ac", "Anechoic chamber clients")]
 
 #
 # Profile parameters.
