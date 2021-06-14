@@ -185,7 +185,7 @@ if params.mmimoid or params.labclient:
 if params.mmimoid:
     mm1 = request.RawPC("mm1")
     mm1.component_id = params.mmimoid
-    mm1.hardware_type = FAROSHWTYPE
+    #mm1.hardware_type = FAROSHWTYPE
     for i in range(params.hubints):
         mmif = mm1.addInterface()
         lan1.addInterface(mmif)
@@ -193,7 +193,7 @@ if params.mmimoid:
 # Lab client to allocate (if any).
 if params.labclient:
     labir = request.RawPC("labir1")
-    labir.hardware_type = IRISHWTYPE
+    #labir.hardware_type = IRISHWTYPE
     labir.component_id = params.labclient
     labif = labir.addInterface()
     lan1.addInterface(labif)
