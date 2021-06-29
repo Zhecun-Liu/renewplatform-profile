@@ -2,6 +2,8 @@
 
 IF1=`/usr/local/etc/emulab/findif -i 192.168.1.1`
 MYWD=`dirname $0`
+SCRATCH="/scratch"
+REPO="https://github.com/renew-wireless/RENEWLab.git"
 
 if [ -z $IF1 ]
 then
@@ -9,14 +11,14 @@ then
 	exit 1
 fi
 
-apt-get -q update && \
-    apt-get -q -y install --reinstall isc-dhcp-server avahi-daemon || \
+sudo apt-get -q update && \
+    sudo apt-get -q -y install --reinstall isc-dhcp-server avahi-daemon || \
     { echo "Failed to install ISC DHCP server and/or Avahi daemon!" && exit 1; }
 
-cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
+sudo cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
   { echo "Could not copy dhcp config file into place!" && exit 1; }
 
-ed /etc/default/isc-dhcp-server << SNIP
+sudo ed /etc/default/isc-dhcp-server << SNIP
 /^INTERFACES/c
 INTERFACES="$IF1"
 .
@@ -31,24 +33,35 @@ fi
 
 if [ ! -e /etc/init/isc-dhcp-server6.override ]
 then
-    echo "manual" > /etc/init/isc-dhcp-server6.override
+    sudo bash -c 'echo "manual" > /etc/init/isc-dhcp-server6.override'
 fi
 
-service isc-dhcp-server start || \
+sudo service isc-dhcp-server start || \
     { echo "Failed to start ISC dhcpd!" && exit 1; }
 
-cd $MYWD
-git submodule update --init --remote || \
-    { echo "Failed to update git submodules!" && exit 1; }
+cd $SCRATCH
+sudo chown ${USER}:${GROUP} .
+sudo chmod 775 .
+git clone $REPO || \
+    { echo "Failed to clone git repository: $REPO" && exit 1; }
 
-cd renew-software
-./install_soapy.sh || \
+cd RENEWLab
+sudo ./install_soapy.sh || \
     { echo "Failed to install Soapy!" && exit 1; }
 
-./install_pylibs.sh || \
+sudo ./install_pylibs.sh || \
     { echo "Failed to install Python libraries!" && exit 1; }
 
-./install_cclibs.sh || \
+sudo ./install_cclibs.sh || \
     { echo "Failed to install C libraries!" && exit 1; }
+
+sudo apt-get -q -y install python3-pip
+sudo pip3 install --upgrade pip
+
+wget --user sklk --password LightHouse2053 https://files.sklk.us/pyfaros/pyfaros-0.0.5%2Bab605729.tar.gz || \
+    { echo "Failed to retrieve Pyfaros Package!" && exit 1; }
+
+sudo pip3 install pyfaros-0.0.5+ab605729.tar.gz --ignore-installed || \
+    { echo "Failed to install Pyfaros!" && exit 1; }
 
 exit $?
