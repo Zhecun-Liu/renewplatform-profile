@@ -1,36 +1,26 @@
-"""This profile instantiates a d840 machine connected to a Skylark FAROS massive MIMO system (64-antenna), comprised of FAROS hub and its connected Iris radio chains (four chains with four and two chains with eight Irises) as well as two Iris clients. The PC boots with Ubuntu 16.04 and includes a MATLAB installation that could be used to run experiments on FAROS with RENEWLab demos. For more information on RENEWLab, see [RENEW documentation page](https://docs.renew-wireless.org)
+"""This profile instantiates a d840 machine connected to a Skylark FAROS massive MIMO system comprised of a FAROS hub, a Faros massive MIMO Base Station, and a set of Iris UEs (clients). 
+The PC boots with Ubuntu 18.04 and includes a MATLAB installation that could be used to run experiments on FAROS with RENEWLab demos. For more information on RENEWLab, see [RENEW documentation page](https://wiki.renew-wireless.org/)
 
 Instructions:
-The FAROS hub and PC are connected via a private 10Gbps link. All Iris radios and the FAROS hub should come up with address between 192.168.1.101 and 192.168.1.200. These addresses are reachable by first logging in to the PC. For more information on how to start an experiment with massive MIMO equipment on POWDER, see [this page](https://docs.renew-wireless.org/getting-started/powder/). 
+The FAROS hub and PC are connected via a private 10Gbps link. 
+All Iris radios and the FAROS hub should come up with address between 192.168.1.101 and 192.168.1.200. 
+These addresses are reachable by first logging in to the PC. 
+For more information on how to start an experiment with massive MIMO equipment on POWDER, see [this page](https://wiki.renew-wireless.org/en/quickstartguide/userenewonpowder). 
 
-To get started with FAROS massive MIMO hardware, see [RENEW Hardware Documentation](https://docs.renew-wireless.org/getting-started/hardware/).
+To get started with FAROS massive MIMO hardware, see [RENEW Hardware Documentation](https://wiki.renew-wireless.org/en/architectures/hardwarearchitecture).
 
 For questions about access to the required PC type and massive MIMO radio devices, please contact support@powderwireless.net
-
-A step-by-step procedure to run simple demos is as follows:
 
 - Once your experiment is ready, from your terminal, ssh to pc1 with X11 forwarding:
  
 	`ssh -X USERNAME@pc19-meb.emulab.net`
 
-- Go to the renew-software repository python demos folder: 
+- The RENEWLab code repository will be automatically cloned in the /scratch/ directory: 
 
-	`cd /local/repository/renew-software/PYTHON/DEMOS`
+	`cd /scratch/RENEWLab`
 
-- Run example 1 (bursty oscilloscope and spectrum analyzer demo): 
+- Follow the instructions in our [wiki](https://wiki.renew-wireless.org/en/quickstartguide/userenewonpowder) to run a demo script.  
 
-	`sudo python3 SISO_RX.py --serial RF3E000143`
-
-- Run example 2 (sending and receiving a sinewave burst between two Iris devices in tdd mode): 
-
-	`python3 SISO_TXRX_TDD.py`
-
-- In case you get the following error after running any of the examples, try re-running the code. This is a transient error, related to the discovery of Iris devices.
-
-	`RuntimeError: SoapySDR::Device::make() no driver specified and no enumeration results`
-
-
-To learn more about the rest of demos and examples and how to run your own apps, see [RENEWLab documentation](https://docs.renew-wireless.org/dev-suite/design-flows/)
 """
 
 import geni.portal as portal
