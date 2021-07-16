@@ -4,6 +4,7 @@ IF1=`/usr/local/etc/emulab/findif -i 192.168.1.1`
 MYWD=`dirname $0`
 SCRATCH="/scratch"
 REPO="https://github.com/renew-wireless/RENEWLab.git"
+PYFAROS="https://github.com/skylarkwireless/pyfaros.git"
 
 if [ -z $IF1 ]
 then
@@ -58,10 +59,11 @@ sudo ./install_cclibs.sh || \
 sudo apt-get -q -y install python3-pip
 sudo pip3 install --upgrade pip
 
-wget --user sklk --password LightHouse2053 https://files.sklk.us/pyfaros/pyfaros-0.0.5%2Bab605729.tar.gz || \
-    { echo "Failed to retrieve Pyfaros Package!" && exit 1; }
-
-sudo pip3 install pyfaros-0.0.5+ab605729.tar.gz --ignore-installed || \
+git clone --branch v1.0 --depth 1 --single-branch $PYFAROS || \
+    { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
+cd pyfaros/
+./create_package.sh
+cd dist && pip3 install *.tar.gz --ignore-installed || \
     { echo "Failed to install Pyfaros!" && exit 1; }
 
 exit $?
