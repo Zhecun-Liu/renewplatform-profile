@@ -5,6 +5,7 @@ MYWD=`dirname $0`
 SCRATCH="/scratch"
 REPO="https://github.com/renew-wireless/RENEWLab.git"
 PYFAROS="https://github.com/skylarkwireless/pyfaros.git"
+SOUNDER="/scratch/RENEWLab/CC/Sounder/"
 
 if [ -z $IF1 ]
 then
@@ -59,11 +60,18 @@ sudo ./install_cclibs.sh || \
 sudo apt-get -q -y install python3-pip
 sudo pip3 install --upgrade pip
 
-git clone --branch v1.0 --depth 1 --single-branch $PYFAROS || \
+git clone --branch v1.1 --depth 1 --single-branch $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
 ./create_package.sh
 cd dist && pip3 install *.tar.gz --ignore-installed || \
     { echo "Failed to install Pyfaros!" && exit 1; }
+
+# Run command twice in case of board discovery transient issue
+cd $SOUNDER"files"
+python3 -m pyfaros.discover --json-out
+sleep 1
+python3 -m pyfaros.discover --json-out
+cd $SCRATCH
 
 exit $?
