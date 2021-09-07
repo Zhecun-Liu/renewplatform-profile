@@ -31,7 +31,7 @@ import geni.rspec.emulab.spectrum as spectrum
 
 # Resource strings
 PCIMG = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU18-64-STD"
-MATLAB_DS_URN = "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
+MATLAB_DS_URN = "urn:publicid:IDN+emulab.net:powdersandbox+imdataset+matlab2021ra-etc" # "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/faros_start.sh"
 PCHWTYPE = "d840"
@@ -132,7 +132,7 @@ request = pc.makeRequestRSpec()
 def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
     if not dsname:
         dsname = "ds-%s" % node.name
-    bs = request.RemoteBlockstore(dsname, mp)
+    bs = request.Blockstore(dsname, mp)
     if dstype == "rwclone":
         bs.rwclone = True
     elif dstype == "readonly":
@@ -154,11 +154,16 @@ else:
     pc1.hardware_type = PCHWTYPE
 pc1.disk_image = PCIMG
 if params.matlabds:
-    connect_DS(pc1, MATLAB_DS_URN, MATLAB_MP, "matlab1")
+    # connect_DS(pc1, MATLAB_DS_URN, MATLAB_MP, "matlab1")
+    mlbs = pc1.Blockstore( "matlab1", MATLAB_MP )
+    mlbs.dataset = MATLAB_DS_URN
+    mlbs.placement = "nonsysvol"
+
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 #if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
 bs2 = pc1.Blockstore("scratch","/scratch")
+bs2.size = "100GB"
 bs2.placement = "nonsysvol"
 if params.remds:
     connect_DS(pc1, params.remds, params.remmp, dstype=params.remtype)
