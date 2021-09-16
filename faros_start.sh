@@ -112,6 +112,8 @@ sudo ldconfig
 python3 -m pyfaros.discover --json-out
 sleep 1
 python3 -m pyfaros.discover --json-out
+
+echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) /scratch/ > /dev/null 2>&1' | sudo tee /etc/profile.d/11-scratchowner.sh
 cd $SCRATCH
 
 exit $?
