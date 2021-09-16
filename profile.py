@@ -30,7 +30,7 @@ import geni.rspec.emulab as elab
 import geni.rspec.emulab.spectrum as spectrum
 
 # Resource strings
-PCIMG = "urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU18-64-STD"
+PCIMG = "urn:publicid:IDN+emulab.net+image+argos-test:agora-ubuntu-180405" #"urn:publicid:IDN+emulab.net+image+emulab-ops:UBUNTU18-64-STD"
 MATLAB_DS_URN = "urn:publicid:IDN+emulab.net:powdersandbox+imdataset+matlab2021ra-etc" # "urn:publicid:IDN+emulab.net:powderprofiles+ltdataset+matlab-extra"
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/faros_start.sh"
