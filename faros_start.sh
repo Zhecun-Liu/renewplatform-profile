@@ -108,6 +108,12 @@ cd dist && sudo pip3 install pyfaros-0.0.5+efa49b90.tar.gz --ignore-installed ||
 #echo /usr/local/lib/python3/dist-packages/ | sudo tee /usr/lib/python3/dist-packages/SoapySDR.pth
 sudo ldconfig
 
+#Make the saopy settings a lower priority
+sudo mv /usr/local/lib/sysctl.d/SoapySDRServer.conf /usr/local/lib/sysctl.d/98-SoapySDRServer.conf
+#Ethernet buffer sizes
+echo -e '# Ethernet transport tuning\n# Socket Rx Buffer Max Size\nnet.core.rmem_max=536870912\n#Socket Send Buffer Max Size\nnet.core.wmem_max=536870912' | sudo tee /etc/sysctl.d/99-agora.conf
+sudo sysctl --load /etc/sysctl.d/99-agora.conf
+
 # Run command twice in case of board discovery transient issue
 python3 -m pyfaros.discover --json-out
 sleep 1
