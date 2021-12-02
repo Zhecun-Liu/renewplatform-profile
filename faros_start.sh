@@ -46,8 +46,8 @@ sudo chown ${USER}:${GROUP} .
 sudo chmod 775 .
 
 mkdir dependencies
-mkdir dev_repos
-cd dev_repos
+mkdir repos
+cd repos
 
 git clone --branch master $REPO || \
     { echo "Failed to clone git repository: $REPO" && exit 1; }
@@ -62,6 +62,7 @@ cmake -DALLOW_OPENBLAS_MACOS=ON .
 make -j`nproc`
 sudo make install
 sudo ldconfig
+cd ../
 
 # Install Soapy tools
 # SoapySDR
