@@ -49,15 +49,15 @@ mkdir dependencies
 mkdir repos
 cd repos
 
-git clone --branch master $REPO || \
+git clone --branch master $REPO RENEWLab || \
     { echo "Failed to clone git repository: $REPO" && exit 1; }
 
 cd ../dependencies
 
-# --- Armadillo (10.6.2)
-wget http://sourceforge.net/projects/arma/files/armadillo-10.6.2.tar.xz
-tar -xf armadillo-10.6.2.tar.xz
-cd armadillo-10.6.2
+# --- Armadillo (10.7.4)
+wget http://sourceforge.net/projects/arma/files/armadillo-10.7.4.tar.xz
+tar -xf armadillo-10.7.4.tar.xz
+cd armadillo-10.7.4
 cmake -DALLOW_OPENBLAS_MACOS=ON .
 make -j`nproc`
 sudo make install
@@ -108,6 +108,16 @@ cd dist && sudo pip3 install pyfaros-0.0.5+efa49b90.tar.gz --ignore-installed ||
 #export PYTHONPATH=/usr/local/lib/python3/dist-packages/:"${PYTHONPATH}"
 #echo /usr/local/lib/python3/dist-packages/ | sudo tee /usr/lib/python3/dist-packages/SoapySDR.pth
 sudo ldconfig
+
+#Build RenewLab
+cd $SCRATCH/repos/RENEWLab/CC/Sounder/mufft/
+git submodule update --init
+cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON ./ && make -j
+cd ../
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DLOG_LEVEL=info && make -j
+cd $SCRATCH
 
 #Make the saopy settings a lower priority
 sudo mv /usr/local/lib/sysctl.d/SoapySDRServer.conf /usr/local/lib/sysctl.d/98-SoapySDRServer.conf
