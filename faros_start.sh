@@ -98,16 +98,19 @@ sudo make install
 cd ../..
 sudo ldconfig
 
-git clone --branch v1.1 --depth 1 --single-branch $PYFAROS || \
+git clone --branch v1.4 --depth 1 --single-branch $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
 ./create_package.sh
-cd dist && sudo pip3 install pyfaros-0.0.5+efa49b90.tar.gz --ignore-installed || \
+pyfaros_version=`./create_version.sh`
+cd dist
+sudo pip3 install pyfaros-${pyfaros_version}.tar.gz --force-reinstall || \
     { echo "Failed to install Pyfaros!" && exit 1; }
+cd ../..
+sudo ldconfig
 
 #export PYTHONPATH=/usr/local/lib/python3/dist-packages/:"${PYTHONPATH}"
 #echo /usr/local/lib/python3/dist-packages/ | sudo tee /usr/lib/python3/dist-packages/SoapySDR.pth
-sudo ldconfig
 
 #Build RenewLab
 cd $SCRATCH/repos/RENEWLab/CC/Sounder/mufft/
@@ -122,8 +125,8 @@ cd $SCRATCH
 #Make the saopy settings a lower priority
 sudo mv /usr/local/lib/sysctl.d/SoapySDRServer.conf /usr/local/lib/sysctl.d/98-SoapySDRServer.conf
 #Ethernet buffer sizes
-echo -e '# Ethernet transport tuning\n# Socket Rx Buffer Max Size\nnet.core.rmem_max=536870912\n#Socket Send Buffer Max Size\nnet.core.wmem_max=536870912' | sudo tee /etc/sysctl.d/99-agora.conf
-sudo sysctl --load /etc/sysctl.d/99-agora.conf
+echo -e '# Ethernet transport tuning\n# Socket Rx Buffer Max Size\nnet.core.rmem_max=536870912\n#Socket Send Buffer Max Size\nnet.core.wmem_max=536870912' | sudo tee /etc/sysctl.d/99-renew.conf
+sudo sysctl --load /etc/sysctl.d/99-renew.conf
 
 # Run command twice in case of board discovery transient issue
 python3 -m pyfaros.discover --json-out
