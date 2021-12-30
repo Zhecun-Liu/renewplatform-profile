@@ -104,7 +104,7 @@ cd pyfaros/
 ./create_package.sh
 pyfaros_version=`./create_version.sh`
 cd dist
-sudo pip3 install pyfaros-${pyfaros_version}.tar.gz --force-reinstall || \
+sudo pip3 install pyfaros-${pyfaros_version}.tar.gz --ignore-installed || \
     { echo "Failed to install Pyfaros!" && exit 1; }
 cd ../..
 sudo ldconfig
