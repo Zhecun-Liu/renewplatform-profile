@@ -132,7 +132,7 @@ request = pc.makeRequestRSpec()
 def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
     if not dsname:
         dsname = "ds-%s" % node.name
-    bs = request.Blockstore(dsname, mp)
+    bs = request.RemoteBlockstore(dsname, mp)
     if dstype == "rwclone":
         bs.rwclone = True
     elif dstype == "readonly":
