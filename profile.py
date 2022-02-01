@@ -41,9 +41,9 @@ DEF_BS_SIZE = 0
 DEF_BS_MOUNT_POINT = "/opt/data"
 DEF_REMDS_MP = "/opt/data"
 
-REMDS_TYPES = [("readwrite", "Read-Write (persistent)"),
-               ("readonly", "Read Only"),
-               ("rwclone", "Read-Write Clone (not persistent)")]
+REMDS_TYPES = [("readonly", "Read Only"),
+               ("rwclone", "Read-Write Clone (not persistent)"),
+               ("readwrite", "Read-Write (persistent)")]
 
 MMIMO_ARRAYS = ["", ("mmimo-ac", "Anechoic chamber array"),
                 ("mmimo1", "Honors rooftop array")]
