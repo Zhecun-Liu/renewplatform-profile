@@ -98,6 +98,10 @@ sudo make install
 cd ../..
 sudo ldconfig
 
+# Update pip3
+sudo pip3 install --upgrade pip
+
+# Install Pyfaros
 git clone --branch v1.4 --depth 1 --single-branch $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
