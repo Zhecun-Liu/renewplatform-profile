@@ -55,6 +55,7 @@ git clone --branch master $REPO RENEWLab || \
 cd ../dependencies
 
 # --- Armadillo (10.7.4)
+echo "Installing Armadillo Library"
 wget http://sourceforge.net/projects/arma/files/armadillo-10.7.4.tar.xz
 tar -xf armadillo-10.7.4.tar.xz
 cd armadillo-10.7.4
@@ -66,6 +67,7 @@ cd ../
 
 # Install Soapy tools
 # SoapySDR
+echo "Installing SoapySDR"
 git clone --branch soapy-sdr-0.8.1 --depth 1 --single-branch https://github.com/pothosware/SoapySDR.git
 cd SoapySDR
 mkdir -p build
@@ -77,6 +79,7 @@ cd ../..
 sudo ldconfig
 
 #SoapyRemote
+echo "Installing SoapyRemote"
 git clone --branch soapy-remote-0.5.2 --depth 1 --single-branch https://github.com/pothosware/SoapyRemote.git
 cd SoapyRemote
 mkdir -p build
@@ -88,6 +91,7 @@ cd ../..
 sudo ldconfig
 
 #Iris drivers
+echo "Installing SoapyIris"
 git clone --branch soapy-iris-2020.02.0.1 --depth 1 --single-branch https://github.com/skylarkwireless/sklk-soapyiris.git
 cd sklk-soapyiris
 mkdir -p build
@@ -99,9 +103,11 @@ cd ../..
 sudo ldconfig
 
 # Update pip3
+echo "Updating Pip"
 sudo pip3 install --upgrade pip
 
 # Install Pyfaros
+echo "Installing Pyfaros"
 git clone --branch v1.4 --depth 1 --single-branch $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
@@ -117,6 +123,7 @@ sudo ldconfig
 #echo /usr/local/lib/python3/dist-packages/ | sudo tee /usr/lib/python3/dist-packages/SoapySDR.pth
 
 #Build RenewLab
+echo "Building RENEWLab (Sounder)"
 cd $SCRATCH/repos/RENEWLab/CC/Sounder/mufft/
 git submodule update --init
 cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON ./ && make -j
