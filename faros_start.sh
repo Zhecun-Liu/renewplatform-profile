@@ -108,7 +108,7 @@ sudo pip3 install --upgrade pip
 
 # Install Pyfaros
 echo "Installing Pyfaros"
-git clone --branch v1.4 --depth 1 --single-branch $PYFAROS || \
+git clone --branch feat-updateDep $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
 ./create_package.sh
