@@ -6,14 +6,14 @@ SCRATCH="/scratch"
 REPO="https://github.com/renew-wireless/RENEWLab.git"
 PYFAROS="https://github.com/skylarkwireless/pyfaros.git"
 
+sudo apt-get -y update --allow-releaseinfo-change
 if [ -z $IF1 ]
 then
 	echo "Could not find interface for running dhcpd!"
 	exit 1
 fi
 
-sudo apt-get -q update && \
-    sudo apt-get -q -y install --reinstall isc-dhcp-server avahi-daemon || \
+sudo apt-get -q -y install --reinstall isc-dhcp-server avahi-daemon || \
     { echo "Failed to install ISC DHCP server and/or Avahi daemon!" && exit 1; }
 
 sudo cp -f $MYWD/dhcpd.conf /etc/dhcp/dhcpd.conf || \
