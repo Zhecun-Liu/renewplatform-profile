@@ -45,12 +45,11 @@ REMDS_TYPES = [("readonly", "Read Only"),
                ("rwclone", "Read-Write Clone (not persistent)"),
                ("readwrite", "Read-Write (persistent)")]
 
-MMIMO_ARRAYS = ["", ("mmimo-ac", "Anechoic Chamber Array"),
-                ("mmimo1-honors", "Honors Rooftop Array"),
-                ("mmimo1-meb","MEB Rooftop Array")]
+MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors Rooftop Array"),
+                    ("mmimo1-meb","MEB Rooftop Array")]
 
-LAB_CLIENTS = ["", ("irisclients-ac", "Anechoic Chamber Clients"), 
-                   ("irisclients2-meb", "MEB Rooftop Clients")]
+LAB_CLIENTS = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
+                   ("irisclients2-meb", "MEB Rooftop Clients Site2")]
 
 #
 # Profile parameters.
@@ -72,20 +71,20 @@ pc.defineStructParameter(
     "freq_ranges", "Range", [],
     multiValue=True,
     min=1,
-    multiValueTitle="Frequency ranges for over-the-air operation (mMIMO RANGE: 3550 MHz to 3600 MHz).",
+    multiValueTitle="Frequency ranges for over-the-air operation (mMIMO RANGE: 3540 MHz to 3600 MHz).",
     members=[
         portal.Parameter(
             "freq_min",
             "Frequency Min",
             portal.ParameterType.BANDWIDTH,
-            3550.0,
+            3540.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
         portal.Parameter(
             "freq_max",
             "Frequency Max",
             portal.ParameterType.BANDWIDTH,
-            3560.0,
+            3550.0,
             longDescription="Values are rounded to the nearest kilohertz."
         ),
     ])
