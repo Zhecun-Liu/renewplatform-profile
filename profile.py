@@ -37,6 +37,7 @@ STARTUP_SCRIPT = "/local/repository/faros_start.sh"
 PCHWTYPE = "d840"
 FAROSHWTYPE = "faros_sfp"
 IRISHWTYPE = "iris030"
+SHVLAN_NAME = "iris-sharedlan"
 DEF_BS_SIZE = 0
 DEF_BS_MOUNT_POINT = "/opt/data"
 DEF_REMDS_MP = "/opt/data"
@@ -57,14 +58,14 @@ LAB_CLIENTS = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
 pc = portal.Context()
 
 # Array to allocate
-pc.defineParameter("mmimoid", "Name of  Massive MIMO array to allocate.",
-                   portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS,
-                   longDescription="Leave blank to omit mMIMO array.")
-
+#pc.defineParameter("mmimoid", "Name of  Massive MIMO array to allocate.",
+#                   portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS,
+#                   longDescription="Leave blank to omit mMIMO array.")
+#
 # Allocate client radio?
-pc.defineParameter("labclient", "Allocate lab Iris client radio.",
-                   portal.ParameterType.STRING, LAB_CLIENTS[0], LAB_CLIENTS,
-                   longDescription="Leave blank to omit lab client.")
+#pc.defineParameter("labclient", "Allocate lab Iris client radio.",
+#                   portal.ParameterType.STRING, LAB_CLIENTS[0], LAB_CLIENTS,
+#                   longDescription="Leave blank to omit lab client.")
 
 # Frequency/spectrum parameters
 pc.defineStructParameter(
@@ -88,6 +89,35 @@ pc.defineStructParameter(
             longDescription="Values are rounded to the nearest kilohertz."
         ),
     ])
+
+
+pc.defineStructParameter(
+    "mmimo_devices", "mMIMO Devices", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="Massive MIMO devices to allocate.",
+    members=[
+        portal.Parameter(
+            "mmimoid", "ID of Massive MIMO array to allocate.",
+            portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
+        ),
+    ])
+
+pc.defineStructParameter(
+    "lab_clients", "Lab Iris Clients", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="Iris Lab clients to allocate.",
+    members=[
+        portal.Parameter(
+            "irisid", "ID of iris client to allocate.",
+            portal.ParameterType.STRING, LAB_CLIENTS[0], LAB_CLIENTS
+        ),
+    ])
+
+
+pc.defineParameter("roofclients", "Allocate rooftop Iris client radios.",
+                   portal.ParameterType.BOOLEAN, False)
 
 pc.defineParameter("fixedid", "Fixed PC Node_id (Optional)",
                    portal.ParameterType.STRING, "", advanced=True,
@@ -171,26 +201,51 @@ if params.remds:
 
 # LAN connecting up everything (if needed).  Members are added below.
 lan1 = None
-if params.mmimoid or params.labclient:
+if len(params.mmimo_devices) or len(params.lab_clients) or params.roofclients:
     lan1 = request.LAN("lan1")
     lan1.vlan_tagging = False
     lan1.setNoBandwidthShaping()
     lan1.addInterface(if1pc1)
 
 # Request a Faros BS.
-if params.mmimoid:
-    mm1 = request.RawPC("mm1")
-    mm1.component_id = params.mmimoid
-    #mm1.hardware_type = FAROSHWTYPE
-    for i in range(params.hubints):
-        mmif = mm1.addInterface()
+#if params.mmimoid:
+#    mm1 = request.RawPC("mm1")
+#    mm1.component_id = params.mmimoid
+#    #mm1.hardware_type = FAROSHWTYPE
+#    for i in range(params.hubints):
+#        mmif = mm1.addInterface()
+#        lan1.addInterface(mmif)
+
+# Request all Faros BSes requested
+for i, mmimodev in enumerate(params.mmimo_devices):
+    mm = request.RawPC("mm%d" % i)
+    mm.component_id = mmimodev.mmimoid
+    mm.hardware_type = FAROSHWTYPE
+    for j in range(params.hubints):
+        mmif = mm.addInterface()
         lan1.addInterface(mmif)
 
 # Lab client to allocate (if any).
-if params.labclient:
-    labir = request.RawPC("labir1")
-    #labir.hardware_type = IRISHWTYPE
-    labir.component_id = params.labclient
+#if params.labclient:
+#    labir = request.RawPC("labir1")
+#    #labir.hardware_type = IRISHWTYPE
+#    labir.component_id = params.labclient
+#    labif = labir.addInterface()
+#    lan1.addInterface(labif)
+
+# Request rooftop Iris clients.
+if params.roofclients:
+    # Allocate USTAR Iris
+    ir1 = request.RawPC("ir1")
+    ir1.hardware_type = IRISHWTYPE
+    ir1.component_id = "iris1-ustar"
+    # Enable connectivity to shared vlan with rooftop Irises
+    lan1.connectSharedVlan(SHVLAN_NAME)
+
+for i, irisdev in enumerate(params.lab_clients):
+    labir = request.RawPC("ir%d" % i)
+    labir.hardware_type = IRISHWTYPE
+    labir.component_id = irisdev.irisid
     labif = labir.addInterface()
     lan1.addInterface(labif)
 
