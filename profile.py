@@ -159,6 +159,9 @@ pc.verifyParameters()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
+# VNC - initialize
+request.initVNC()
+
 # Mount a remote dataset
 def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
     if not dsname:
@@ -179,6 +182,7 @@ def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
 
 # Request a PC
 pc1 = request.RawPC("pc1")
+pc1.startVNC()
 if params.fixedid:
     pc1.component_id=params.fixedid
 else:
