@@ -159,9 +159,6 @@ pc.verifyParameters()
 # Create a Request object to start building the RSpec.
 request = pc.makeRequestRSpec()
 
-# VNC - initialize
-request.initVNC()
-
 # Mount a remote dataset
 def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
     if not dsname:
@@ -182,7 +179,10 @@ def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
 
 # Request a PC
 pc1 = request.RawPC("pc1")
-pc1.startVNC()
+
+# VNC - initialize
+request.initVNC()
+
 if params.fixedid:
     pc1.component_id=params.fixedid
 else:
@@ -194,6 +194,7 @@ if params.matlabds:
     mlbs.dataset = MATLAB_DS_URN
     mlbs.placement = "nonsysvol"
 
+pc1.startVNC()
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 #if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
