@@ -187,9 +187,6 @@ if1pc1.latency = 0
 bss1 = pc1.Blockstore("pc1scratch","/scratch")
 bss1.size = "500GB"
 bss1.placement = "nonsysvol"
-if params.remds:
-    connect_DS(pc1, params.remds, params.remmp, dstype=params.remtype)
-
 
 # LAN connecting up everything (if needed).  Members are added below.
 mmimolan = None
