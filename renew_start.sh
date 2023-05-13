@@ -13,7 +13,7 @@ DISABLE_DHCP=$1
 
 MYWD=`dirname $0`
 AGORAREPO="https://github.com/Agora-wireless/Agora.git"
-PYFAROS="https://github.com/skylarkwireless/pyfaros.git"
+PYFAROS="https://github.com/Agora-wireless/pyfaros"
 RENEWLAB="https://github.com/renew-wireless/RENEWLab"
 
 sudo apt-get -y update --allow-releaseinfo-change
@@ -96,7 +96,7 @@ git clone --branch develop $RENEWLAB RENEWLab || \
 
 cd ../dependencies
 
-# --- Armadillo (11.4.2)
+# --- Armadillo (12.2.0)
 wget http://sourceforge.net/projects/arma/files/armadillo-12.2.0.tar.xz
 tar -xf armadillo-12.2.0.tar.xz
 cd armadillo-12.2.0
@@ -140,7 +140,7 @@ sudo make install
 cd ../..
 sudo ldconfig
 
-git clone --branch feat-updateDep --depth 1 --single-branch $PYFAROS || \
+git clone --branch python310_updates --depth 1 --single-branch $PYFAROS || \
     { echo "Failed to clone git repository: $PYFAROS" && exit 1; }
 cd pyfaros/
 ./create_package.sh
