@@ -24,6 +24,7 @@ PCIMG = 'urn:publicid:IDN+emulab.net+image+argos-test:renew-u22-base'
 MATLAB_DS_URN = 'urn:publicid:IDN+emulab.net:powdersandbox+imdataset+matlab2021ra-etc'
 INTEL_LIBS_URN = 'urn:publicid:IDN+emulab.net:argos-test+imdataset+inteloneapi-u22'
 
+RENEW_WD = "/scratch"
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
@@ -194,12 +195,15 @@ if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0
 # 40 Gbs good for d840 only
 if1pc1.latency = 0
 
-bss1 = pc1.Blockstore("pc1scratch","/scratch")
-if params.pchwtype == PC_HWTYPE_SEL[2]: 
-    bss1.size = "500GB"
+bss1 = pc1.Blockstore("pc1scratch", RENEW_WD)
+#740 Only has 2x240GB Sata Drives (1 for sysvol)
+if params.pchwtype == PC_HWTYPE_SEL[1]: 
+    bss1.size = "220GB"
+#840 has 4x1.6TB NVMEe SSD drives
+#430 1 200GB SSD, 2x1TB 7200 rpm SATA
 else:
-    bss1.size = "100GB"
-#500 good for D840 only
+    bss1.size = "900GB"
+#place this on the nonsystem disk
 bss1.placement = "nonsysvol"
 
 # LAN connecting up everything (if needed).  Members are added below.
