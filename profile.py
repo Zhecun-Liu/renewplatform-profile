@@ -190,11 +190,13 @@ if params.matlabds:
 pc1.addService(pg.Execute(shell="sh", command="sudo chmod 775 /local/repository/renew_start.sh"))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+#if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+# 40 Gbs good for d840 only
 if1pc1.latency = 0
 
 bss1 = pc1.Blockstore("pc1scratch","/scratch")
-bss1.size = "500GB"
+#bss1.size = "500GB"
+#500 good for D840 only
 bss1.placement = "nonsysvol"
 
 # LAN connecting up everything (if needed).  Members are added below.
