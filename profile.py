@@ -42,6 +42,10 @@ MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors rooftop array"),
 UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
       ("irisclients2-meb", "MEB Rooftop Clients Site2")]
 
+PC_HWTYPE_SEL = [("d430", "D430 - Min"),
+                 ("d740", "D740 - Mid"),
+                 ("d840", "D840 - Max")]
+
 
 #
 # Profile parameters.
@@ -96,6 +100,7 @@ pc.defineStructParameter(
         ),
     ])
 
+#Typical Options
 pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
                    portal.ParameterType.BOOLEAN, True)
 
@@ -103,6 +108,7 @@ pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
 pc.defineParameter("intellibs", "Attach intel and 3rd party library datasets to the compute host.",
                    portal.ParameterType.BOOLEAN, True)
 
+#Advanced options
 pc.defineParameter("intelmountpt", "Mountpoint for 3rd party libraries and inteloneAPI",
                    portal.ParameterType.STRING, "/opt", advanced=True)
 
@@ -113,6 +119,11 @@ pc.defineParameter("INTEL_LIBS_URN", "URN of the 3rd party library dataset",
 pc.defineParameter("hubints", "Number of interfaces to attach on hub (def: 2)",
                    portal.ParameterType.INTEGER, 2, advanced=True,
                    longDescription="This can be a number between 1 and 4.")
+
+pc.defineParameter("pchwtype", "PC Hardware Type",
+                   portal.ParameterType.IMAGE,
+                   PC_HWTYPE_SEL[0], PC_HWTYPE_SEL, advanced=True,
+                   longDescription="Select the PC Hardware Type for RENEW software")
 
 pc.defineParameter("fixedpc1id", "Fixed Node id (Optional)",
                    portal.ParameterType.STRING, "", advanced=True,
