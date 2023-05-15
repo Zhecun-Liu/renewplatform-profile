@@ -1,4 +1,4 @@
-"""This profile instantiates a d840 machine running Ubuntu 22.04 64-bit LTS with 2 40Gbps NICs and allocates all existing disk space on it. The machine is connected to a Skylark FAROS massive MIMO system comprised of a FAROS hub, a Faros massive MIMO Base Station.  A second d740 machine is running the same base Ubuntu 20.04 image and is connected to a set of Iris UEs (clients).  Additionally, the image has Intel oneapi, Flexran, and all other compilation dependencies of Agora preinstalled as an image backed dataset.
+"""This profile instantiates a powder compute machine running Ubuntu 22.04 64-bit LTS. The machine can be connected to Skylark FAROS massive MIMO system comprised of a FAROS hub, a Faros massive MIMO Base Station.  An optional machine running the same base image can be separately connected to a set of Iris UEs (clients).  Additionally, the image has Intel oneapi, Flexran, and all other compilation dependencies of Agora preinstalled as an image backed dataset.
 
 Since this profile includes multiple disk images it will can take up to 30 minutes to instantiate
 
@@ -26,10 +26,8 @@ INTEL_LIBS_URN = 'urn:publicid:IDN+emulab.net:argos-test+imdataset+inteloneapi-u
 
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
-PCHWBS = "d840"
 FAROSHWTYPE = "faros_sfp"
 IRISHWTYPE = "iris030"
-DEF_BS_SIZE = 0
 
 REMDS_TYPES = [("readonly", "Read Only"),
                ("rwclone", "Read-Write Clone (not persistent)"),
@@ -56,7 +54,7 @@ pc = portal.Context()
 pc.defineStructParameter(
     "freq_ranges", "Range", [],
     multiValue=True,
-    min=1,
+    min=0,
     multiValueTitle="Frequency ranges for over-the-air operation.",
     members=[
         portal.Parameter(
@@ -122,7 +120,7 @@ pc.defineParameter("hubints", "Number of interfaces to attach on hub (def: 2)",
 
 pc.defineParameter("pchwtype", "PC Hardware Type",
                    portal.ParameterType.IMAGE,
-                   PC_HWTYPE_SEL[0], PC_HWTYPE_SEL, advanced=True,
+                   PC_HWTYPE_SEL[2], PC_HWTYPE_SEL, advanced=True,
                    longDescription="Select the PC Hardware Type for RENEW software")
 
 pc.defineParameter("fixedpc1id", "Fixed Node id (Optional)",
@@ -175,7 +173,7 @@ pc1.startVNC()
 if params.fixedpc1id:
     pc1.component_id=params.fixedpc1id
 else:
-    pc1.hardware_type = PCHWBS
+    pc1.hardware_type = params.pchwtype
 pc1.disk_image = PCIMG
 
 if params.intellibs:
