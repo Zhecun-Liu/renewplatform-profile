@@ -169,12 +169,12 @@ if params.matlabds:
 bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
 #Matlab dataset ~30GB
 #740 Only has 2x240GB Sata Drives (1 for sysvol)
-#--if params.pchwtype == PC_HWTYPE_SEL[1]: 
-bss1.size = "180GB"
+if params.pchwtype == PC_HWTYPE_SEL[1]: 
+    bss1.size = "180GB"
 #840 has 4x1.6TB NVMEe SSD drives
 #430 1 200GB SSD, 2x1TB 7200 rpm SATA
-#--else:
-#--    bss1.size = "900GB"
+else:
+    bss1.size = "900GB"
 #place this on the nonsystem disk
 bss1.placement = "nonsysvol"
 
