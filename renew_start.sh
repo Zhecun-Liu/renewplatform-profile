@@ -1,15 +1,14 @@
 #!/bin/bash
 
-SCRATCH="/scratch"
+RENEW_WD="scratch"
+DISABLE_DHCP=$1
 
 # Only run 1 time
-STARTUP_FILE=$SCRATCH/.startup_complete.me
+STARTUP_FILE=$RENEW_WD/.startup_complete.me
 if [ -f "$STARTUP_FILE" ]; then
 #echo "$STARTUP_FILE exists exiting"
     exit 0
 fi
-
-DISABLE_DHCP=$1
 
 MYWD=`dirname $0`
 AGORAREPO="https://github.com/Agora-wireless/Agora.git"
@@ -19,16 +18,16 @@ RENEWLAB="https://github.com/renew-wireless/RENEWLab"
 #Check to see if the mounts happened correctly
 #/etc/fstab waiting here (/usr/local/matlab && /scratch/ && /renew_dataset/ would be best to pass these paths into the script
 loop_ctr=0
-while [ $loop_ctr -lt 20 -a $(grep -csi scratch /etc/fstab) -eq 0 ]
+while [ $loop_ctr -lt 20 -a $(grep -csi $RENEW_WD /etc/fstab) -eq 0 ]
 do
-  echo "scratch directory does not exist yet"
+  echo "Working Directory ($RENEW_WD) does not exist yet"
   sleep 30
   loop_ctr=`expr $loop_ctr + 1`
 done
 
-if [ $(grep -csi scratch /etc/fstab) -qe 0 ]
+if [ $(grep -csi $RENEW_WD /etc/fstab) -qe 0 ]
 then
-  echo "Working directory (scratch) does not exist"
+  echo "Working Directory ($RENEW_WD) does not exist"
   exit 1
 fi
 
