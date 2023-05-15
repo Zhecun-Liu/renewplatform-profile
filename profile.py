@@ -174,8 +174,8 @@ if params.pchwtype == PC_HWTYPE_SEL[1]:
 #840 has 4x1.6TB NVMEe SSD drives
 #430 1 200GB SSD, 2x1TB 7200 rpm SATA
 else:
-    bss1.size = "900GB"
-#place this on the nonsystem disk
+    bss1.size = "180GB"
+#place this on the nonsystem disk (900)
 bss1.placement = "nonsysvol"
 
 if len(params.mmimo_devices):
