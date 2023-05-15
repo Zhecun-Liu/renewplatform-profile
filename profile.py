@@ -30,10 +30,6 @@ STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
 IRISHWTYPE = "iris030"
 
-REMDS_TYPES = [("readonly", "Read Only"),
-               ("rwclone", "Read-Write Clone (not persistent)"),
-               ("readwrite", "Read-Write (persistent)")]
-
 MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors rooftop array"),
                 ("mmimo1-meb", "Meb basestation array"),
                 ("mmimo1-ustar", "Ustar Basestation array (experimental)")]
@@ -44,7 +40,6 @@ UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
                  ("d840", "D840 - Max")]
-
 
 #
 # Profile parameters.
@@ -149,24 +144,6 @@ request = pc.makeRequestRSpec()
 # VNC - initialize
 request.initVNC()
 
-# Mount a remote dataset
-def connect_DS(node, urn, mp, dsname = "", dstype = "rwclone"):
-    if not dsname:
-        dsname = "ds-%s" % node.name
-    bs = request.RemoteBlockstore(dsname, mp)
-    if dstype == "rwclone":
-        bs.rwclone = True
-    elif dstype == "readonly":
-        bs.readonly = True
-        
-    # Set dataset URN
-    bs.dataset = urn
-
-    # Create link from node to OAI dataset rw clone
-    bslink = request.Link("link_%s" % dsname, members=(node, bs.interface))
-    bslink.vlan_tagging = True
-    bslink.best_effort = True
-
 # Request PC1
 pc1 = request.RawPC("pc1")
 pc1.startVNC()
@@ -177,10 +154,11 @@ else:
     pc1.hardware_type = params.pchwtype
 pc1.disk_image = PCIMG
 
+#Setup Disk space for external libs and working directory
 if params.intellibs:
     ilbspc1 = pc1.Blockstore( "intellibbspc1", params.intelmountpt )
     ilbspc1.dataset = params.INTEL_LIBS_URN
-    #ilbspc1.size = "32GB"
+    ilbspc1.size = "32GB"
     ilbspc1.placement = "sysvol"
 
 if params.matlabds:
@@ -188,23 +166,28 @@ if params.matlabds:
     mlbs.dataset = MATLAB_DS_URN
     mlbs.placement = "nonsysvol"
 
-pc1.addService(pg.Execute(shell="sh", command="sudo chmod 775 /local/repository/renew_start.sh"))
-pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
-if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-#if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
-# 40 Gbs good for d840 only
-if1pc1.latency = 0
-
-bss1 = pc1.Blockstore("pc1scratch", RENEW_WD)
+bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
+#Matlab dataset ~30GB
 #740 Only has 2x240GB Sata Drives (1 for sysvol)
 if params.pchwtype == PC_HWTYPE_SEL[1]: 
-    bss1.size = "220GB"
+    bss1.size = "200GB"
 #840 has 4x1.6TB NVMEe SSD drives
 #430 1 200GB SSD, 2x1TB 7200 rpm SATA
 else:
     bss1.size = "900GB"
 #place this on the nonsystem disk
 bss1.placement = "nonsysvol"
+
+#Add the startup scripts
+pc1.addService(pg.Execute(shell="sh", command="sudo chmod 775 "STARTUP_SCRIPT))
+pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
+if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+# 40 Gbs good for d840 only
+if params.pchwtype == PC_HWTYPE_SEL[2]: 
+    if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+else:
+    if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
+if1pc1.latency = 0
 
 # LAN connecting up everything (if needed).  Members are added below.
 mmimolan = None
