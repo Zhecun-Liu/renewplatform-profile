@@ -178,9 +178,16 @@ else:
 #place this on the nonsystem disk
 bss1.placement = "nonsysvol"
 
+if len(params.mmimo_devices):
+    DISABLE_DHCP="false"
+else:
+    DISABLE_DHCP="true"
+
+CHMOD_STARTUP = "sudo chmod 775 "STARTUP_SCRIPT
+STARTUP_COMMAND = STARTUP_SCRIPT DISABLE_DHCP
 #Add the startup scripts
-pc1.addService(pg.Execute(shell="sh", command="sudo chmod 775 "STARTUP_SCRIPT))
-pc1.addService(pg.Execute(shell="sh", command=STARTUP_SCRIPT))
+pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
+pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 # 40 Gbs good for d840 only
 if params.pchwtype == PC_HWTYPE_SEL[2]: 
@@ -202,14 +209,14 @@ if len(params.mmimo_devices):
     #mmimolan.setNoInterSwitchLinks()
     mmimolan.addInterface(if1pc1)
 
-# Request all Faros BSes requested
-for i, mmimodev in enumerate(params.mmimo_devices):
-    mm = request.RawPC("mm%d" % i)
-    mm.component_id = mmimodev.mmimoid
-    mm.hardware_type = FAROSHWTYPE
-    for j in range(params.hubints):
-        mmif = mm.addInterface()
-        mmimolan.addInterface(mmif)
+    # Request all Faros BSes requested
+    for i, mmimodev in enumerate(params.mmimo_devices):
+        mm = request.RawPC("mm%d" % i)
+        mm.component_id = mmimodev.mmimoid
+        mm.hardware_type = FAROSHWTYPE
+        for j in range(params.hubints):
+            mmif = mm.addInterface()
+            mmimolan.addInterface(mmif)
 
 if len(params.ue_devices):
     uelan = mmimolan
