@@ -195,7 +195,10 @@ if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0
 if1pc1.latency = 0
 
 bss1 = pc1.Blockstore("pc1scratch","/scratch")
-#bss1.size = "500GB"
+if params.pchwtype == PC_HWTYPE_SEL[2]: 
+    bss1.size = "500GB"
+else
+    bss1.size = "100GB"
 #500 good for D840 only
 bss1.placement = "nonsysvol"
 
