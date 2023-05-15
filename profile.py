@@ -190,10 +190,10 @@ pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 # 40 Gbs good for d840 only
-if params.pchwtype == PC_HWTYPE_SEL[2]: 
-    if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
-else:
-    if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
+#if params.pchwtype == PC_HWTYPE_SEL[2]: 
+#    if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+#else:
+#    if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
 if1pc1.latency = 0
 
 # LAN connecting up everything (if needed).  Members are added below.
