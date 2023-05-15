@@ -16,6 +16,22 @@ AGORAREPO="https://github.com/Agora-wireless/Agora.git"
 PYFAROS="https://github.com/Agora-wireless/pyfaros"
 RENEWLAB="https://github.com/renew-wireless/RENEWLab"
 
+#Check to see if the mounts happened correctly
+#/etc/fstab waiting here (/usr/local/matlab && /scratch/ && /renew_dataset/ would be best to pass these paths into the script
+loop_ctr=0
+while [ $loop_ctr -lt 20 -a $(grep -csi scratch /etc/fstab) -eq 0 ]
+do
+  echo "scratch directory does not exist yet"
+  sleep 30
+  loop_ctr=`expr $loop_ctr + 1`
+done
+
+if [ $(grep -csi scratch /etc/fstab) -qe 0 ]
+then
+  echo "Working directory (scratch) does not exist"
+  exit 1
+fi
+
 sudo apt-get -y update --allow-releaseinfo-change
 if [ "$DISABLE_DHCP" != "true" ]
 then
