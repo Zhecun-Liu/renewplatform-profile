@@ -4,7 +4,7 @@ RENEW_WD="scratch"
 DISABLE_DHCP=$1
 
 # Only run 1 time
-STARTUP_FILE=$RENEW_WD/.startup_complete.me
+STARTUP_FILE=/${RENEW_WD}/.startup_complete.me
 if [ -f "$STARTUP_FILE" ]; then
 #echo "$STARTUP_FILE exists exiting"
     exit 0
@@ -16,7 +16,7 @@ PYFAROS="https://github.com/Agora-wireless/pyfaros"
 RENEWLAB="https://github.com/renew-wireless/RENEWLab"
 
 #Check to see if the mounts happened correctly
-#/etc/fstab waiting here (/usr/local/matlab && /scratch/ && /renew_dataset/ would be best to pass these paths into the script
+#/etc/fstab waiting here (/usr/local/matlab && /$RENEW_WD/ && /renew_dataset/ would be best to pass these paths into the script
 loop_ctr=0
 while [ $loop_ctr -lt 20 -a $(grep -csi $RENEW_WD /etc/fstab) -eq 0 ]
 do
@@ -95,7 +95,7 @@ sudo systemctl daemon-reload
 sudo systemctl start disable-turbo-boost
 sudo systemctl enable disable-turbo-boost
 
-cd $SCRATCH
+cd /${RENEW_WD}
 sudo chown ${USER}:${GROUP} .
 sudo chmod 775 .
 
@@ -200,27 +200,27 @@ echo -e '#!/usr/bin/bash\nsource /opt/intel/oneapi/setvars.sh --config="/opt/int
 #non-login consoles
 echo -e '\n#Gen intel env vars\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee -a /etc/bash.bashrc
 #User ownership of the working directory
-echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) /scratch/ > /dev/null 2>&1' | sudo tee /etc/profile.d/11-scratchowner.sh
+echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) /${RENEW_WD}/ > /dev/null 2>&1' | sudo tee /etc/profile.d/11-wdowner.sh
 #non-login consoles
-echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) /scratch/ > /dev/null 2>&1' | sudo tee -a /etc/bash.bashrc
+echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) /${RENEW_WD}/ > /dev/null 2>&1' | sudo tee -a /etc/bash.bashrc
 
 #Build RenewLab
-cd $SCRATCH/repos/RENEWLab/CC/Sounder/mufft/
+cd /${RENEW_WD}/repos/RENEWLab/CC/Sounder/mufft/
 git submodule update --init
 cmake -DCMAKE_POSITION_INDEPENDENT_CODE=ON ./ && make -j
 cd ../
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DLOG_LEVEL=info && make -j
-cd $SCRATCH
+cd /$RENEW_WD
 
 #Build Agora
-cd $SCRATCH/repos/agora
+cd /$RENEW_WD/repos/agora
 mkdir build
 cd build
 cmake .. -DRADIO_TYPE=SOAPY_IRIS
 make -j
-cd $SCRATCH
+cd /$RENEW_WD
 
 #Modify the grub file to isolate the cpu cores turn off multithreading, cpu mitigations, and sets hugepage support, iommu enabled for dpdk vfio.
 global_options="default_hugepagesz=1G hugepagesz=1G hugepages=4 mitigations=off nosmt intel_iommu=on iommu=pt cpufreq.default_governor=performance"
@@ -257,7 +257,7 @@ sudo systemctl disable ondemand
 #lscpu |grep "CPU MHz"
 
 #output a json configuration file
-cd $SCRATCH
+cd /$RENEW_WD
 python3 -m pyfaros.discover --json-out
 sleep 1
 python3 -m pyfaros.discover --json-out
