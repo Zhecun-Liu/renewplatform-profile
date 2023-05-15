@@ -183,8 +183,8 @@ if len(params.mmimo_devices):
 else:
     DISABLE_DHCP="true"
 
-CHMOD_STARTUP = "sudo chmod 775 "STARTUP_SCRIPT
-STARTUP_COMMAND = STARTUP_SCRIPT DISABLE_DHCP
+CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
+STARTUP_COMMAND = STARTUP_SCRIPT + " " + DISABLE_DHCP
 #Add the startup scripts
 pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
