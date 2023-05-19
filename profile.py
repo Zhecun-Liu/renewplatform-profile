@@ -47,7 +47,8 @@ REMDS_TYPES = [("readonly", "Read Only"),
                ("readwrite", "Read-Write (persistent)")]
 
 MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors Rooftop Array"),
-                    ("mmimo1-meb","MEB Rooftop Array")]
+                    ("mmimo1-meb","MEB Rooftop Array"),
+                    ("mmimo1-ustar","USTAR Rooftop Array")]
 
 LAB_CLIENTS = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
                    ("irisclients2-meb", "MEB Rooftop Clients Site2")]
