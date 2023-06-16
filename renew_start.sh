@@ -200,9 +200,9 @@ echo -e '#!/usr/bin/bash\nsource /opt/intel/oneapi/setvars.sh --config="/opt/int
 #non-login consoles
 echo -e '\n#Gen intel env vars\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee -a /etc/bash.bashrc
 #User ownership of the working directory
-echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) /${RENEW_WD}/ > /dev/null 2>&1' | sudo tee /etc/profile.d/11-wdowner.sh
+echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee /etc/profile.d/11-wd_owner.sh
 #non-login consoles
-echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) /${RENEW_WD}/ > /dev/null 2>&1' | sudo tee -a /etc/bash.bashrc
+echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
 
 #Build RenewLab
 cd /${RENEW_WD}/repos/RENEWLab/CC/Sounder/mufft/
@@ -212,15 +212,15 @@ cd ../
 mkdir build
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release -DLOG_LEVEL=info && make -j
-cd /$RENEW_WD
+cd /${RENEW_WD}
 
 #Build Agora
-cd /$RENEW_WD/repos/agora
+cd /${RENEW_WD}/repos/agora
 mkdir build
 cd build
 cmake .. -DRADIO_TYPE=SOAPY_IRIS
 make -j
-cd /$RENEW_WD
+cd /${RENEW_WD}
 
 #Modify the grub file to isolate the cpu cores turn off multithreading, cpu mitigations, and sets hugepage support, iommu enabled for dpdk vfio.
 global_options="default_hugepagesz=1G hugepagesz=1G hugepages=4 mitigations=off nosmt intel_iommu=on iommu=pt cpufreq.default_governor=performance"
@@ -257,7 +257,7 @@ sudo systemctl disable ondemand
 #lscpu |grep "CPU MHz"
 
 #output a json configuration file
-cd /$RENEW_WD
+cd /${RENEW_WD}
 python3 -m pyfaros.discover --json-out
 sleep 1
 python3 -m pyfaros.discover --json-out
