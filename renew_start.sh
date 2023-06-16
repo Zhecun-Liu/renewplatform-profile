@@ -199,10 +199,21 @@ sudo sysctl --load /etc/sysctl.d/99-agora.conf
 echo -e '#!/usr/bin/bash\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee /etc/profile.d/10-inteloneapivars.sh
 #non-login consoles
 echo -e '\n#Gen intel env vars\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee -a /etc/bash.bashrc
+
 #User ownership of the working directory
-echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee /etc/profile.d/11-wd_owner.sh
+CHOWN_WD='#2sudo chown -R $(id -u):$(id -g) '/${RENEW_WD}/' > /dev/null 2>&1'
+#echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee /etc/profile.d/11-wd_owner.sh
 #non-login consoles
-echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
+#echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
+
+echo -e -n '#!/usr/bin/bash\n#sudo chown -R $(id -u):$(id -g) ' | sudo tee /etc/profile.d/11-wd_owner.sh
+echo "/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/profile.d/11-wd_owner.sh
+echo $CHOWN_WD | sudo tee -a /etc/profile.d/11-wd_owner.sh
+
+#non-login consoles
+#echo -e -n '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) ' | sudo tee -a /etc/bash.bashrc
+#echo "/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
+
 
 #Build RenewLab
 cd /${RENEW_WD}/repos/RENEWLab/CC/Sounder/mufft/
