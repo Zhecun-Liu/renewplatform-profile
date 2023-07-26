@@ -34,8 +34,8 @@ MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
                 ("mmimo1-meb", "MEB"),
                 ("mmimo1-ustar", "USTAR")]
 
-UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris Ues)"),
-      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris Ues)")]
+UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
+      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
@@ -77,7 +77,7 @@ pc.defineStructParameter(
     multiValueTitle="Massive MIMO basestations to allocate.",
     members=[
         portal.Parameter(
-            "mmimoid", "Array Location",
+            "mmimoid", "Array site location",
             portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
         ),
     ])
