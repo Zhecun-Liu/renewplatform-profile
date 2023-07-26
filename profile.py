@@ -30,12 +30,12 @@ STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
 IRISHWTYPE = "iris030"
 
-MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors rooftop array"),
-                ("mmimo1-meb", "Meb basestation array"),
-                ("mmimo1-ustar", "Ustar Basestation array (experimental)")]
+MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
+                ("mmimo1-meb", "MEB"),
+                ("mmimo1-ustar", "USTAR")]
 
-UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
-      ("irisclients2-meb", "MEB Rooftop Clients Site2")]
+UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris Ues)"),
+      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris Ues)")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
@@ -71,25 +71,25 @@ pc.defineStructParameter(
 
 # Array to allocate
 pc.defineStructParameter(
-    "mmimo_devices", "mMIMO Devices", [],
+    "mmimo_devices", "mMIMO Device", [],
     multiValue=True,
     min=0,
     multiValueTitle="Massive MIMO basestations to allocate.",
     members=[
         portal.Parameter(
-            "mmimoid", "ID of Massive MIMO array to allocate.",
+            "mmimoid", "Array Location",
             portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
         ),
     ])
 
 pc.defineStructParameter(
-    "ue_devices", "UE Devices", [],
+    "ue_devices", "UE Device", [],
     multiValue=True,
     min=0,
-    multiValueTitle="Iris UE clients to allocate.",
+    multiValueTitle="UE clients to allocate.",
     members=[
         portal.Parameter(
-            "ueid", "ID of Iris UE to allocate.",
+            "ueid", "UE site location.",
             portal.ParameterType.STRING, UE[0], UE
         ),
     ])
