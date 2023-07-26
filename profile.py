@@ -96,11 +96,11 @@ pc.defineStructParameter(
 
 #Typical Options
 pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
-                   portal.ParameterType.BOOLEAN, True)
+                   portal.ParameterType.BOOLEAN, True, advanced=True)
 
 # third party libs
 pc.defineParameter("intellibs", "Attach intel and 3rd party library datasets to the compute host.",
-                   portal.ParameterType.BOOLEAN, True)
+                   portal.ParameterType.BOOLEAN, True, advanced=True)
 
 #Advanced options
 pc.defineParameter("intelmountpt", "Mountpoint for 3rd party libraries and inteloneAPI",
