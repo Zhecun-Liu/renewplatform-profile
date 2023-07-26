@@ -89,7 +89,7 @@ pc.defineStructParameter(
     multiValueTitle="UE clients to allocate.",
     members=[
         portal.Parameter(
-            "ueid", "UE site location.",
+            "ueid", "UE site location",
             portal.ParameterType.STRING, UE[0], UE
         ),
     ])
