@@ -205,7 +205,7 @@ echo -e '#!/usr/bin/bash\nsource /opt/intel/oneapi/setvars.sh --config="/opt/int
 echo -e '\n#Gen intel env vars\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee -a /etc/bash.bashrc
 
 #User ownership of the working directory
-CHOWN_WD='#sudo chown -R $(id -u):$(id -g) '/${RENEW_WD}/' > /dev/null 2>&1'
+CHOWN_WD='sudo chown -R $(id -u):$(id -g) '/${RENEW_WD}/' > /dev/null 2>&1'
 echo -e -n '#!/usr/bin/bash\n'${CHOWN_WD} | sudo tee /etc/profile.d/11-wd_owner.sh
 #non-login consoles
 echo -e '#Set user in control of working dir\n'${CHOWN_WD} | sudo tee -a /etc/bash.bashrc
