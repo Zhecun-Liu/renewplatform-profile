@@ -109,17 +109,17 @@ git clone --branch develop $AGORAREPO agora || \
 git clone --branch develop $RENEWLAB RENEWLab || \
     { echo "Failed to clone git repository: $RENEWLAB" && exit 1; }
 
-cd ../dependencies
-
-# --- Armadillo (12.2.0)
-wget http://sourceforge.net/projects/arma/files/armadillo-12.6.0.tar.xz
-tar -xf armadillo-12.6.0.tar.xz
-cd armadillo-12.6.0
+cd /${RENEW_WD}/dependencies
+# --- Armadillo (12.6.1)
+wget http://sourceforge.net/projects/arma/files/armadillo-12.6.1.tar.xz
+tar -xf armadillo-12.6.1.tar.xz
+cd armadillo-12.6.1
 cmake -DALLOW_OPENBLAS_MACOS=ON .
 make -j`nproc`
 sudo make install
+
+cd /${RENEW_WD}/dependencies
 sudo ldconfig
-cd ../
 
 # Install Soapy tools
 # SoapySDR
@@ -130,9 +130,9 @@ cd build
 cmake ../
 make -j`nproc`
 sudo make install
-cd ../..
-sudo ldconfig
 
+cd /${RENEW_WD}/dependencies
+sudo ldconfig
 #SoapyRemote
 git clone --branch soapy-remote-0.5.2 --depth 1 --single-branch https://github.com/pothosware/SoapyRemote.git
 cd SoapyRemote
@@ -141,9 +141,9 @@ cd build
 cmake ../
 make -j`nproc`
 sudo make install
-cd ../..
-sudo ldconfig
 
+cd /${RENEW_WD}/dependencies
+sudo ldconfig
 #Iris drivers
 git clone --branch bypass-socket-mod --depth 1 --single-branch https://github.com/Agora-wireless/sklk-soapyiris.git
 cd sklk-soapyiris
@@ -152,7 +152,8 @@ cd build
 cmake ../
 make -j`nproc`
 sudo make install
-cd ../..
+
+cd /${RENEW_WD}/dependencies
 sudo ldconfig
 
 git clone --branch python310_updates --depth 1 --single-branch $PYFAROS || \
@@ -163,6 +164,8 @@ pyfaros_version=`./create_version.sh`
 cd dist
 sudo pip3 install pyfaros-${pyfaros_version}.tar.gz --force-reinstall || \
     { echo "Failed to install Pyfaros!" && exit 1; }
+
+cd /${RENEW_WD}/dependencies
 sudo ldconfig
 
 source /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"
@@ -201,19 +204,10 @@ echo -e '#!/usr/bin/bash\nsource /opt/intel/oneapi/setvars.sh --config="/opt/int
 echo -e '\n#Gen intel env vars\nsource /opt/intel/oneapi/setvars.sh --config="/opt/intel/oneapi/renew-config.txt"' | sudo tee -a /etc/bash.bashrc
 
 #User ownership of the working directory
-CHOWN_WD='#2sudo chown -R $(id -u):$(id -g) '/${RENEW_WD}/' > /dev/null 2>&1'
-#echo -e '#!/usr/bin/bash\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee /etc/profile.d/11-wd_owner.sh
+CHOWN_WD='#sudo chown -R $(id -u):$(id -g) '/${RENEW_WD}/' > /dev/null 2>&1'
+echo -e -n '#!/usr/bin/bash\n'${CHOWN_WD} | sudo tee /etc/profile.d/11-wd_owner.sh
 #non-login consoles
-#echo -e '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) '"/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
-
-echo -e -n '#!/usr/bin/bash\n#sudo chown -R $(id -u):$(id -g) ' | sudo tee /etc/profile.d/11-wd_owner.sh
-echo "/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/profile.d/11-wd_owner.sh
-echo $CHOWN_WD | sudo tee -a /etc/profile.d/11-wd_owner.sh
-
-#non-login consoles
-#echo -e -n '#Set user in control of working dir\nsudo chown -R $(id -u):$(id -g) ' | sudo tee -a /etc/bash.bashrc
-#echo "/${RENEW_WD}/ > /dev/null 2>&1" | sudo tee -a /etc/bash.bashrc
-
+echo -e '#Set user in control of working dir\n'${CHOWN_WD} | sudo tee -a /etc/bash.bashrc
 
 #Build RenewLab
 cd /${RENEW_WD}/repos/RENEWLab/CC/Sounder/mufft/
