@@ -113,6 +113,7 @@ cd /${RENEW_WD}/dependencies
 # --- Armadillo (12.6.1)
 wget http://sourceforge.net/projects/arma/files/armadillo-12.6.1.tar.xz
 tar -xf armadillo-12.6.1.tar.xz
+rm armadillo-12.6.1.tar.xz
 cd armadillo-12.6.1
 cmake -DALLOW_OPENBLAS_MACOS=ON .
 make -j`nproc`
