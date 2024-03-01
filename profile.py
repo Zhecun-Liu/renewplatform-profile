@@ -28,14 +28,21 @@ RENEW_WD = "/scratch"
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
-IRISHWTYPE = "iris030"
+# IRISHWTYPE = "iris030"
+IRISHWTYPE = "usrp"
 
-MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
-                ("mmimo1-meb", "MEB"),
-                ("mmimo1-ustar", "USTAR")]
+# MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
+#                 ("mmimo1-meb", "MEB"),
+#                 ("mmimo1-ustar", "USTAR")]
+MMIMO_ARRAYS = ["",
+                ("mmimo1-meb", "MEB")]
 
+# UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
+#       ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)")]
 UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
-      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)")]
+      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)"),
+      ("WEB nuc2", "WEB Ground Level Fixed Endpoint (NUC 2)"),
+      ("cbrssdr1-meb", "MEB Rooftop USRP")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
