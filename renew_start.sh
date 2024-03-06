@@ -13,7 +13,8 @@ fi
 MYWD=`dirname $0`
 AGORAREPO="https://github.com/Agora-wireless/Agora.git"
 PYFAROS="https://github.com/Agora-wireless/pyfaros"
-RENEWLAB="https://github.com/renew-wireless/RENEWLab"
+# RENEWLAB="https://github.com/renew-wireless/RENEWLab"
+RENEWLAB="https://github.com/Zhecun-Liu/RENEWLab"
 
 #Check to see if the mounts happened correctly
 #/etc/fstab waiting here (/usr/local/matlab && /$RENEW_WD/ && /renew_dataset/ would be best to pass these paths into the script
@@ -25,7 +26,8 @@ do
   loop_ctr=`expr $loop_ctr + 1`
 done
 
-if [ $(grep -csi $RENEW_WD /etc/fstab) -qe 0 ]
+# if [ $(grep -csi $RENEW_WD /etc/fstab) -qe 0 ]
+if [ $(grep -csi $RENEW_WD /etc/fstab) -eq 0 ]
 then
   echo "Working Directory ($RENEW_WD) does not exist"
   exit 1
@@ -106,7 +108,10 @@ cd repos
 git clone --branch develop $AGORAREPO agora || \
     { echo "Failed to clone git repository: $AGORAREPO" && exit 1; }
 
-git clone --branch develop $RENEWLAB RENEWLab || \
+# git clone --branch develop $RENEWLAB RENEWLab || \
+#     { echo "Failed to clone git repository: $RENEWLAB" && exit 1; }
+
+git clone --branch multicell1 $RENEWLAB RENEWLab || \
     { echo "Failed to clone git repository: $RENEWLAB" && exit 1; }
 
 cd /${RENEW_WD}/dependencies
@@ -118,6 +123,35 @@ cd armadillo-12.6.1
 cmake -DALLOW_OPENBLAS_MACOS=ON .
 make -j`nproc`
 sudo make install
+
+cd /${RENEW_WD}/dependencies
+sudo ldconfig
+#  Add UHD
+UHD=true
+if [ "$UHD" = true ] ; then
+	echo Installing UHD driver...
+	sudo apt install -y libboost-all-dev libusb-1.0-0-dev doxygen
+	git clone git://github.com/EttusResearch/uhd.git
+	cd uhd/host
+	git submodule init
+	git submodule update
+	mkdir build
+	cd build
+	cmake ..
+	make -j`nproc`
+	sudo make install
+	cd ../../..
+
+
+	git clone https://github.com/pothosware/SoapyUHD.git
+	cd SoapyUHD
+	mkdir build
+	cd build
+	cmake ..
+	make -j`nproc`
+	sudo make install
+	cd ../..
+fi
 
 cd /${RENEW_WD}/dependencies
 sudo ldconfig
