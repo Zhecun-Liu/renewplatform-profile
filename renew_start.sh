@@ -14,7 +14,9 @@ MYWD=`dirname $0`
 AGORAREPO="https://github.com/Agora-wireless/Agora.git"
 PYFAROS="https://github.com/Agora-wireless/pyfaros"
 # RENEWLAB="https://github.com/renew-wireless/RENEWLab"
-RENEWLAB="https://github.com/Zhecun-Liu/RENEWLab"
+
+# using a fork repo
+RENEWLAB="https://github.com/Zhecun-Liu/RENEWLab" 
 
 #Check to see if the mounts happened correctly
 #/etc/fstab waiting here (/usr/local/matlab && /$RENEW_WD/ && /renew_dataset/ would be best to pass these paths into the script
@@ -111,7 +113,7 @@ git clone --branch develop $AGORAREPO agora || \
 # git clone --branch develop $RENEWLAB RENEWLab || \
 #     { echo "Failed to clone git repository: $RENEWLAB" && exit 1; }
 
-git clone --branch multicell1 $RENEWLAB RENEWLab || \
+git clone --branch uhd-testing-powder $RENEWLAB RENEWLab || \
     { echo "Failed to clone git repository: $RENEWLAB" && exit 1; }
 
 cd /${RENEW_WD}/dependencies
