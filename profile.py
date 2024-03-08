@@ -201,7 +201,7 @@ else:
 
 #Add the startup scripts
 CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
-STARTUP_COMMAND = STARTUP_SCRIPT + " " + DISABLE_DHCP
+STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
 pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
@@ -226,10 +226,11 @@ else:
 pc2.disk_image = PCIMG
 
 #Add the startup scripts
+STARTUP_COMMAND = STARTUP_SCRIPT + " " + "true"
 pc2.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc2.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
-if1pc2 = pc2.addInterface("if1pc2", pg.IPv4Address("192.168.1.2", "255.255.255.0"))
+if1pc2 = pc2.addInterface("if1pc2", pg.IPv4Address("192.168.40.1", "255.255.255.0"))
 if1pc2.latency = 0
 #if1pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
 
