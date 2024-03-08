@@ -134,22 +134,22 @@ if [ "$UHD" = true ] ; then
 	echo Installing UHD driver...
 	sudo apt install -y libboost-all-dev libusb-1.0-0-dev doxygen
   # testing against a specific version (v4.6.0.0)
-	# git clone https://github.com/EttusResearch/uhd.git
-  wget https://github.com/EttusResearch/uhd/releases/download/v4.6.0.0/uhd-images_4.6.0.0.tar.xz
-  tar -xf uhd-images_4.6.0.0.tar.xz
-  rm uhd-images_4.6.0.0.tar.xz
-  cd uhd-images_4.6.0.0
-  cmake -DALLOW_OPENBLAS_MACOS=ON .
-  make -j`nproc`
-  sudo make install
-	# cd uhd/host
-	# git submodule init
-	# git submodule update
-	# mkdir build
-	# cd build
-	# cmake ..
-	# make -j`nproc`
-	# sudo make install
+	git clone https://github.com/EttusResearch/uhd.git
+  # wget https://github.com/EttusResearch/uhd/releases/download/v4.6.0.0/uhd-images_4.6.0.0.tar.xz
+  # tar -xf uhd-images_4.6.0.0.tar.xz
+  # rm uhd-images_4.6.0.0.tar.xz
+  # cd uhd-images_4.6.0.0
+  # cmake -DALLOW_OPENBLAS_MACOS=ON .
+  # make -j`nproc`
+  # sudo make install
+	cd uhd/host
+	git submodule init
+	git submodule update
+	mkdir build
+	cd build
+	cmake ..
+	make -j`nproc`
+	sudo make install
 	cd ../../..
 
   # soapyUHD may not be required
