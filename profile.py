@@ -30,6 +30,11 @@ STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
 # IRISHWTYPE = "iris030"
 IRISHWTYPE = "usrp"
+# change profile to a 'split' approach
+PCHWBS = "d840"
+PCHWUSER = "d740"
+
+
 
 # MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
 #                 ("mmimo1-meb", "MEB"),
@@ -37,8 +42,7 @@ IRISHWTYPE = "usrp"
 MMIMO_ARRAYS = ["",
                 ("mmimo1-meb", "MEB")]
 
-# UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
-#       ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)")]
+
 UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
       ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)"),
       ("WEB nuc2", "WEB Ground Level Fixed Endpoint (NUC 2)"),
@@ -126,9 +130,13 @@ pc.defineParameter("pchwtype", "PC Hardware Type",
                    PC_HWTYPE_SEL[2], PC_HWTYPE_SEL, advanced=True,
                    longDescription="Select the PC Hardware Type for RENEW software")
 
-pc.defineParameter("fixedpc1id", "Fixed Node id (Optional)",
+pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
+
+pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
@@ -158,7 +166,8 @@ pc1.startVNC()
 if params.fixedpc1id:
     pc1.component_id=params.fixedpc1id
 else:
-    pc1.hardware_type = params.pchwtype
+    # pc1.hardware_type = params.pchwtype
+    pc1.hardware_type = PCHWBS
 pc1.disk_image = PCIMG
 
 #Setup Disk space for external libs and working directory
@@ -190,11 +199,12 @@ if len(params.mmimo_devices):
 else:
     DISABLE_DHCP="true"
 
+#Add the startup scripts
 CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
 STARTUP_COMMAND = STARTUP_SCRIPT + " " + DISABLE_DHCP
-#Add the startup scripts
 pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
+
 if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 # 40 Gbs good for d840 only
 if params.pchwtype == "d840":
@@ -203,8 +213,54 @@ else:
     if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
 if1pc1.latency = 0
 
+# interface 2 - pclink
+if2pc1 = pc1.addInterface("if2pc1", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
+
+
+# Request pc2
+pc2 = request.RawPC("pc2")
+if params.fixedpc2id:
+    pc2.component_id=params.fixedpc2id
+else:
+    pc2.hardware_type = PCHWUSER
+pc2.disk_image = PCIMG
+
+#Add the startup scripts
+pc2.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
+pc2.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
+
+if1pc2 = pc2.addInterface("if1pc2", pg.IPv4Address("192.168.1.2", "255.255.255.0"))
+if1pc2.latency = 0
+#if1pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
+
+#Interface 2 - pclink
+if2pc2 = pc2.addInterface("if2pc2", pg.IPv4Address("192.168.2.2", "255.255.255.0"))
+#if2pc2.setJumboFrames()
+#if2pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
+pc2.startVNC()
+
+#Setup Disk space for external libs and working directory
+if params.intellibs:
+    ilbspc2 = pc2.Blockstore( "intellibbspc2", params.intelmountpt )
+    ilbspc2.dataset = params.INTEL_LIBS_URN
+    ilbspc2.size = "32GB"
+    ilbspc2.placement = "sysvol"
+
+bss2 = pc2.Blockstore("pc2scratch2","/scratch")
+bss2.size = "200GB"
+bss2.placement = "nonsysvol"
+
+# link interfaces of the two PCs
+pclink = request.Link("pclink", members=[if2pc1,if2pc2])
+pclink.setJumboFrames()
+# pclink.setNoBandwidthShaping()
+# pclink.best_effort = True
+
+
 # LAN connecting up everything (if needed).  Members are added below.
 mmimolan = None
+uelan = None
+
 
 # Request a Faros BS.
 if len(params.mmimo_devices):
