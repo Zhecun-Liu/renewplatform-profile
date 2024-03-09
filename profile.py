@@ -290,8 +290,9 @@ if len(params.ue_devices):
         ue.component_id = uedev.ueid
         # ue.hardware_type = IRISHWTYPE
         ue.hardware_type = USRPHWTYPE
-        ueif = ue.addInterface(if1pc2)
-        uelan.addInterface(ueif)
+        # ueif = ue.addInterface()
+        # uelan.addInterface(ueif)
+        uelan.addInterface(if1pc2)
 
 # Add frequency request(s)
 for frange in params.freq_ranges:
