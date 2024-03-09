@@ -253,8 +253,8 @@ bss2.size = "200GB"
 bss2.placement = "nonsysvol"
 
 # link interfaces of the two PCs
-pclink = request.Link("pclink", members=[if2pc1,if2pc2])
-pclink.setJumboFrames()
+# pclink = request.Link("pclink", members=[if2pc1,if2pc2])
+# pclink.setJumboFrames()
 # pclink.setNoBandwidthShaping()
 # pclink.best_effort = True
 
