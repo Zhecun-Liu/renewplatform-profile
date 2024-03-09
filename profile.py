@@ -200,6 +200,7 @@ else:
 
 #Add the startup scripts
 CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
+# pc1 is for mmimo dev, DHCP should be enabled
 STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
 pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
@@ -225,6 +226,7 @@ else:
 pc2.disk_image = PCIMG
 
 #Add the startup scripts
+# pc2 for USRP, DHCP should be disabled ("true")
 STARTUP_COMMAND = STARTUP_SCRIPT + " " + "true"
 pc2.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc2.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
@@ -288,7 +290,7 @@ if len(params.ue_devices):
         ue.component_id = uedev.ueid
         # ue.hardware_type = IRISHWTYPE
         ue.hardware_type = USRPHWTYPE
-        ueif = ue.addInterface()
+        ueif = ue.addInterface(if1pc2)
         uelan.addInterface(ueif)
 
 # Add frequency request(s)
