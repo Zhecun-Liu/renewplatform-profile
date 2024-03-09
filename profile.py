@@ -60,7 +60,6 @@ pc = portal.Context()
 pc.defineStructParameter(
     "freq_ranges", "Range", [],
     multiValue=True,
-    # how many set will show up automatically in scroll menu
     min=1 
     multiValueTitle="Frequency ranges for over-the-air operation.",
     members=[
