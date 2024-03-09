@@ -284,7 +284,7 @@ if len(params.mmimo_devices):
             mmimolan.addInterface(mmif)
 
 if len(params.ue_devices):
-    uelan = mmimolan
+    # uelan = mmimolan
     for i, uedev in enumerate(params.ue_devices):
         ue = request.RawPC("ir%d" % i)
         ue.component_id = uedev.ueid
