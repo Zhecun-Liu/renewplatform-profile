@@ -293,12 +293,12 @@ if len(params.ue_devices):
 # if len(params.ue_devices):
     # uelan = mmimolan
     for i, uedev in enumerate(params.ue_devices):
-        ue = request.RawPC("ir%d" % i)
+        ue = request.RawPC("usrp%d" % i)
         ue.component_id = uedev.ueid
         ue.hardware_type = USRPHWTYPE
         # ueif = ue.addInterface()
         # uelan.addInterface(ueif)
-        
+
 
 
 # Add frequency request(s)
