@@ -29,8 +29,7 @@ MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
 # IRISHWTYPE = "iris030"
-IRISHWTYPE = "usrp"
-# change profile to a 'split' approach
+USRPHWTYPE = "x310"
 PCHWBS = "d840"
 PCHWUSER = "d740"
 
@@ -287,7 +286,8 @@ if len(params.ue_devices):
     for i, uedev in enumerate(params.ue_devices):
         ue = request.RawPC("ir%d" % i)
         ue.component_id = uedev.ueid
-        ue.hardware_type = IRISHWTYPE
+        # ue.hardware_type = IRISHWTYPE
+        ue.hardware_type = USRPHWTYPE
         ueif = ue.addInterface()
         uelan.addInterface(ueif)
 
