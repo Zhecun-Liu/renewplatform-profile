@@ -284,15 +284,22 @@ if len(params.mmimo_devices):
             mmimolan.addInterface(mmif)
 
 if len(params.ue_devices):
+    uelan = request.LAN("uelan")
+    uelan.latency = 0
+    uelan.vlan_tagging = False
+    uelan.setNoBandwidthShaping()
+    uelan.addInterface(if1pc2)
+
+# if len(params.ue_devices):
     # uelan = mmimolan
     for i, uedev in enumerate(params.ue_devices):
         ue = request.RawPC("ir%d" % i)
         ue.component_id = uedev.ueid
-        # ue.hardware_type = IRISHWTYPE
         ue.hardware_type = USRPHWTYPE
         # ueif = ue.addInterface()
         # uelan.addInterface(ueif)
-        uelan.addInterface(if1pc2)
+        
+
 
 # Add frequency request(s)
 for frange in params.freq_ranges:
