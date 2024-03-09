@@ -296,8 +296,8 @@ if len(params.ue_devices):
         ue = request.RawPC("usrp%d" % i)
         ue.component_id = uedev.ueid
         ue.hardware_type = USRPHWTYPE
-        # ueif = ue.addInterface()
-        # uelan.addInterface(ueif)
+        ueif = ue.addInterface()
+        uelan.addInterface(ueif)
 
 
 
