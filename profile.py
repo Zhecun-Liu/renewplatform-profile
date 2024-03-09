@@ -60,7 +60,8 @@ pc = portal.Context()
 pc.defineStructParameter(
     "freq_ranges", "Range", [],
     multiValue=True,
-    min=1,
+    # how many set will show up automatically in scroll menu
+    min=1 
     multiValueTitle="Frequency ranges for over-the-air operation.",
     members=[
         portal.Parameter(
@@ -83,7 +84,7 @@ pc.defineStructParameter(
 pc.defineStructParameter(
     "mmimo_devices", "mMIMO Device", [],
     multiValue=True,
-    min=0,
+    min=1,
     multiValueTitle="Massive MIMO basestations to allocate.",
     members=[
         portal.Parameter(
@@ -95,7 +96,7 @@ pc.defineStructParameter(
 pc.defineStructParameter(
     "ue_devices", "UE Device", [],
     multiValue=True,
-    min=0,
+    min=1,
     multiValueTitle="UE clients to allocate.",
     members=[
         portal.Parameter(
