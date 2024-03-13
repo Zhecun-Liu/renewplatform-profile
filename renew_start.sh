@@ -153,8 +153,8 @@ if [ "$UHD" = true ] ; then
   # make -j`nproc`
   # sudo make install
 	cd uhd/host
-	git submodule init
-	git submodule update
+	# git submodule init
+	# git submodule update
 	mkdir build
 	cd build
 	cmake ..
