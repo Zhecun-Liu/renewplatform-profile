@@ -80,17 +80,17 @@ pc.defineStructParameter(
     ])
 
 # Array to allocate
-pc.defineStructParameter(
-    "mmimo_devices", "mMIMO Device", [],
-    multiValue=True,
-    min=1,
-    multiValueTitle="Massive MIMO basestations to allocate.",
-    members=[
-        portal.Parameter(
-            "mmimoid", "Array site location",
-            portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
-        ),
-    ])
+# pc.defineStructParameter(
+#     "mmimo_devices", "mMIMO Device", [],
+#     multiValue=True,
+#     min=1,
+#     multiValueTitle="Massive MIMO basestations to allocate.",
+#     members=[
+#         portal.Parameter(
+#             "mmimoid", "Array site location",
+#             portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
+#         ),
+#     ])
 
 pc.defineStructParameter(
     "ue_devices", "UE Device", [],
@@ -133,9 +133,9 @@ pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
-pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
+# pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+#                    portal.ParameterType.STRING, "", advanced=True,
+#                    longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
@@ -158,63 +158,63 @@ request = pc.makeRequestRSpec()
 # VNC - initialize
 request.initVNC()
 
-# Request PC1
-pc1 = request.RawPC("pc1")
-pc1.startVNC()
+# # Request PC1
+# pc1 = request.RawPC("pc1")
+# pc1.startVNC()
 
-if params.fixedpc1id:
-    pc1.component_id=params.fixedpc1id
-else:
-    # pc1.hardware_type = params.pchwtype
-    pc1.hardware_type = PCHWBS
-pc1.disk_image = PCIMG
+# if params.fixedpc1id:
+#     pc1.component_id=params.fixedpc1id
+# else:
+#     # pc1.hardware_type = params.pchwtype
+#     pc1.hardware_type = PCHWBS
+# pc1.disk_image = PCIMG
 
-#Setup Disk space for external libs and working directory
-if params.intellibs:
-    ilbspc1 = pc1.Blockstore( "intellibbspc1", params.intelmountpt )
-    ilbspc1.dataset = params.INTEL_LIBS_URN
-    ilbspc1.size = "32GB"
-    ilbspc1.placement = "sysvol"
+# #Setup Disk space for external libs and working directory
+# if params.intellibs:
+#     ilbspc1 = pc1.Blockstore( "intellibbspc1", params.intelmountpt )
+#     ilbspc1.dataset = params.INTEL_LIBS_URN
+#     ilbspc1.size = "32GB"
+#     ilbspc1.placement = "sysvol"
 
-if params.matlabds:
-    mlbs = pc1.Blockstore( "matlabpc1", MATLAB_MP )
-    mlbs.dataset = MATLAB_DS_URN
-    mlbs.placement = "nonsysvol"
+# if params.matlabds:
+#     mlbs = pc1.Blockstore( "matlabpc1", MATLAB_MP )
+#     mlbs.dataset = MATLAB_DS_URN
+#     mlbs.placement = "nonsysvol"
 
-bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
-#Matlab dataset ~30GB
-#740 Only has 2x240GB Sata Drives (use 1 for sysvol)
-if params.pchwtype == "d740":
-    bss1.size = "200GB"
-#840 has 4x1.6TB NVMEe SSD drives
-#430 1 200GB SSD, 2x1TB 7200 rpm SATA
-else:
-    bss1.size = "900GB"
-#place this on the nonsystem disk
-bss1.placement = "nonsysvol"
+# bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
+# #Matlab dataset ~30GB
+# #740 Only has 2x240GB Sata Drives (use 1 for sysvol)
+# if params.pchwtype == "d740":
+#     bss1.size = "200GB"
+# #840 has 4x1.6TB NVMEe SSD drives
+# #430 1 200GB SSD, 2x1TB 7200 rpm SATA
+# else:
+#     bss1.size = "900GB"
+# #place this on the nonsystem disk
+# bss1.placement = "nonsysvol"
 
-if len(params.mmimo_devices):
-    DISABLE_DHCP="false"
-else:
-    DISABLE_DHCP="true"
+# if len(params.mmimo_devices):
+#     DISABLE_DHCP="false"
+# else:
+#     DISABLE_DHCP="true"
 
-#Add the startup scripts
-CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
-# pc1 is for mmimo dev, DHCP should be enabled
-STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
-pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
-pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
+# #Add the startup scripts
+# CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
+# # pc1 is for mmimo dev, DHCP should be enabled
+# STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
+# pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
+# pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
-if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-# 40 Gbs good for d840 only
-if params.pchwtype == "d840":
-    if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
-else:
-    if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
-if1pc1.latency = 0
+# if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+# # 40 Gbs good for d840 only
+# if params.pchwtype == "d840":
+#     if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+# else:
+#     if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
+# if1pc1.latency = 0
 
-# interface 2 - pclink
-if2pc1 = pc1.addInterface("if2pc1", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
+# # interface 2 - pclink
+# if2pc1 = pc1.addInterface("if2pc1", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
 
 
 # Request pc2
@@ -237,7 +237,7 @@ if1pc2.latency = 0
 #if1pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
 
 #Interface 2 - pclink
-if2pc2 = pc2.addInterface("if2pc2", pg.IPv4Address("192.168.2.2", "255.255.255.0"))
+# if2pc2 = pc2.addInterface("if2pc2", pg.IPv4Address("192.168.2.2", "255.255.255.0"))
 #if2pc2.setJumboFrames()
 #if2pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
 pc2.startVNC()
@@ -261,28 +261,28 @@ bss2.placement = "nonsysvol"
 
 
 # LAN connecting up everything (if needed).  Members are added below.
-mmimolan = None
+# mmimolan = None
 uelan = None
 
 
 # Request a Faros BS.
-if len(params.mmimo_devices):
-    mmimolan = request.LAN("mmimolan")
-    #mmimolan.best_effort = True
-    mmimolan.latency = 0
-    mmimolan.vlan_tagging = False
-    mmimolan.setNoBandwidthShaping()
-    #mmimolan.setNoInterSwitchLinks()
-    mmimolan.addInterface(if1pc1)
+# if len(params.mmimo_devices):
+#     mmimolan = request.LAN("mmimolan")
+#     #mmimolan.best_effort = True
+#     mmimolan.latency = 0
+#     mmimolan.vlan_tagging = False
+#     mmimolan.setNoBandwidthShaping()
+#     #mmimolan.setNoInterSwitchLinks()
+#     mmimolan.addInterface(if1pc1)
 
-    # Request all Faros BSes requested
-    for i, mmimodev in enumerate(params.mmimo_devices):
-        mm = request.RawPC("mm%d" % i)
-        mm.component_id = mmimodev.mmimoid
-        mm.hardware_type = FAROSHWTYPE
-        for j in range(params.hubints):
-            mmif = mm.addInterface()
-            mmimolan.addInterface(mmif)
+#     # Request all Faros BSes requested
+#     for i, mmimodev in enumerate(params.mmimo_devices):
+#         mm = request.RawPC("mm%d" % i)
+#         mm.component_id = mmimodev.mmimoid
+#         mm.hardware_type = FAROSHWTYPE
+#         for j in range(params.hubints):
+#             mmif = mm.addInterface()
+#             mmimolan.addInterface(mmif)
 
 if len(params.ue_devices):
     uelan = request.LAN("uelan")
