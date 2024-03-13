@@ -231,6 +231,7 @@ STARTUP_COMMAND = STARTUP_SCRIPT + " " + "true"
 pc2.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc2.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
+# X310s use IP 192.168.40.2, powder sets if's IP on the node side to be ...40.1
 if1pc2 = pc2.addInterface("if1pc2", pg.IPv4Address("192.168.40.1", "255.255.255.0"))
 if1pc2.latency = 0
 #if1pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
