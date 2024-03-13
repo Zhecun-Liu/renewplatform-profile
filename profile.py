@@ -129,13 +129,13 @@ pc.defineParameter("pchwtype", "PC Hardware Type",
                    PC_HWTYPE_SEL[2], PC_HWTYPE_SEL, advanced=True,
                    longDescription="Select the PC Hardware Type for RENEW software")
 
-pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
-
-# pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+# pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
 #                    portal.ParameterType.STRING, "", advanced=True,
-#                    longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
+#                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
+
+pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
