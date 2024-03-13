@@ -199,7 +199,7 @@ request.initVNC()
 #     DISABLE_DHCP="true"
 
 # #Add the startup scripts
-# CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
+CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
 # # pc1 is for mmimo dev, DHCP should be enabled
 # STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
 # pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
