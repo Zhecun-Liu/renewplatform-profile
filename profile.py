@@ -57,27 +57,27 @@ PC_HWTYPE_SEL = [("d430", "D430 - Min"),
 pc = portal.Context()
 
 # Frequency/spectrum parameters
-# pc.defineStructParameter(
-#     "freq_ranges", "Range", [],
-#     multiValue=True,
-#     min=1,
-#     multiValueTitle="Frequency ranges for over-the-air operation.",
-#     members=[
-#         portal.Parameter(
-#             "freq_min",
-#             "Frequency Min",
-#             portal.ParameterType.BANDWIDTH,
-#             3540.0,
-#             longDescription="Values are rounded to the nearest kilohertz."
-#         ),
-#         portal.Parameter(
-#             "freq_max",
-#             "Frequency Max",
-#             portal.ParameterType.BANDWIDTH,
-#             3550.0,
-#             longDescription="Values are rounded to the nearest kilohertz."
-#         ),
-#     ])
+pc.defineStructParameter(
+    "freq_ranges", "Range", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="Frequency ranges for over-the-air operation.",
+    members=[
+        portal.Parameter(
+            "freq_min",
+            "Frequency Min",
+            portal.ParameterType.BANDWIDTH,
+            3540.0,
+            longDescription="Values are rounded to the nearest kilohertz."
+        ),
+        portal.Parameter(
+            "freq_max",
+            "Frequency Max",
+            portal.ParameterType.BANDWIDTH,
+            3550.0,
+            longDescription="Values are rounded to the nearest kilohertz."
+        ),
+    ])
 
 # Array to allocate
 # pc.defineStructParameter(
@@ -141,10 +141,10 @@ pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
 # Bind and verify parameters.
 params = pc.bindParameters()
 
-# for i, frange in enumerate(params.freq_ranges):
-#     if frange.freq_max - frange.freq_min < 1:
-#         perr = portal.ParameterError("Minimum and maximum frequencies must be separated by at least 1 MHz", ["freq_ranges[%d].freq_min" % i, "freq_ranges[%d].freq_max" % i])
-#         portal.context.reportError(perr)
+for i, frange in enumerate(params.freq_ranges):
+    if frange.freq_max - frange.freq_min < 1:
+        perr = portal.ParameterError("Minimum and maximum frequencies must be separated by at least 1 MHz", ["freq_ranges[%d].freq_min" % i, "freq_ranges[%d].freq_max" % i])
+        portal.context.reportError(perr)
 
 if params.hubints < 1 or params.hubints > 4:
     perr = portal.ParameterError("Number of interfaces on hub to connect must be between 1 and 4 (inclusive).")
@@ -303,8 +303,8 @@ if len(params.ue_devices):
 
 
 # Add frequency request(s)
-for frange in params.freq_ranges:
-    request.requestSpectrum(frange.freq_min, frange.freq_max, 100)
+# for frange in params.freq_ranges:
+#     request.requestSpectrum(frange.freq_min, frange.freq_max, 100)
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec()
