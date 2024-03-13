@@ -103,6 +103,9 @@ cd /${RENEW_WD}
 sudo chown ${USER}:${GROUP} .
 sudo chmod 775 .
 
+# install pip3
+yes | sudo apt install python3-pip
+
 mkdir dependencies
 mkdir repos
 cd repos
@@ -132,9 +135,16 @@ sudo ldconfig
 UHD=true
 if [ "$UHD" = true ] ; then
 	echo Installing UHD driver...
-	sudo apt install -y libboost-all-dev libusb-1.0-0-dev doxygen
-  # testing against a specific version (v4.6.0.0)
+  # updated dependencies setup
+	# sudo apt install -y libboost-all-dev libusb-1.0-0-dev doxygen
+  sudo apt-get install autoconf automake build-essential ccache cmake cpufrequtils doxygen ethtool \
+  g++ git inetutils-tools libboost-all-dev libncurses5 libncurses5-dev libusb-1.0-0 libusb-1.0-0-dev \
+  libusb-dev python3-dev python3-mako python3-numpy python3-requests python3-scipy python3-setuptools \
+  python3-ruamel.yaml
+  pip3 install Mako ruamel.yaml
+
 	git clone https://github.com/EttusResearch/uhd.git
+  # testing against a specific version (v4.6.0.0)
   # wget https://github.com/EttusResearch/uhd/releases/download/v4.6.0.0/uhd-images_4.6.0.0.tar.xz
   # tar -xf uhd-images_4.6.0.0.tar.xz
   # rm uhd-images_4.6.0.0.tar.xz
@@ -150,6 +160,11 @@ if [ "$UHD" = true ] ; then
 	cmake ..
 	make -j`nproc`
 	sudo make install
+  # Setup the library path
+  cd lib
+  current_dir=$(pwd)
+  echo "${current_dir}" | sudo tee -a /etc/ld.so.conf
+  sudo ldconfig
 	cd ../../..
 
   # soapyUHD may not be required
