@@ -87,17 +87,17 @@ pc.defineStructParameter(
         ),
     ])
 
-pc.defineStructParameter(
-    "ue_devices", "UE Device", [],
-    multiValue=True,
-    min=1,
-    multiValueTitle="UE clients to allocate.",
-    members=[
-        portal.Parameter(
-            "ueid", "UE site location",
-            portal.ParameterType.STRING, UE[0], UE
-        ),
-    ])
+# pc.defineStructParameter(
+#     "ue_devices", "UE Device", [],
+#     multiValue=True,
+#     min=1,
+#     multiValueTitle="UE clients to allocate.",
+#     members=[
+#         portal.Parameter(
+#             "ueid", "UE site location",
+#             portal.ParameterType.STRING, UE[0], UE
+#         ),
+#     ])
 
 #Typical Options
 pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
@@ -128,9 +128,9 @@ pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
-pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
+# pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+#                    portal.ParameterType.STRING, "", advanced=True,
+#                    longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
@@ -160,8 +160,8 @@ pc1.startVNC()
 if params.fixedpc1id:
     pc1.component_id=params.fixedpc1id
 else:
-    # pc1.hardware_type = params.pchwtype
-    pc1.hardware_type = PCHWBS
+    pc1.hardware_type = params.pchwtype
+    # pc1.hardware_type = PCHWBS
 pc1.disk_image = PCIMG
 
 #Setup Disk space for external libs and working directory
@@ -208,56 +208,10 @@ else:
     if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
 if1pc1.latency = 0
 
-# interface 2 - pclink
-if2pc1 = pc1.addInterface("if2pc1", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
-
-
-# Request pc2
-pc2 = request.RawPC("pc2")
-if params.fixedpc2id:
-    pc2.component_id=params.fixedpc2id
-else:
-    pc2.hardware_type = PCHWUSER
-pc2.disk_image = PCIMG
-
-#Add the startup scripts
-# pc2 for USRP, DHCP should be disabled ("true")
-STARTUP_COMMAND = STARTUP_SCRIPT + " " + "true"
-pc2.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
-pc2.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
-
-# X310s use IP 192.168.40.2, powder sets if's IP on the node side to be ...40.1
-if1pc2 = pc2.addInterface("if1pc2", pg.IPv4Address("192.168.40.1", "255.255.255.0"))
-if1pc2.latency = 0
-#if1pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
-
-#Interface 2 - pclink
-if2pc2 = pc2.addInterface("if2pc2", pg.IPv4Address("192.168.2.2", "255.255.255.0"))
-#if2pc2.setJumboFrames()
-#if2pc2.bandwidth = 10 * 1000 * 1000 # 10 Gbps for a d740 node
-pc2.startVNC()
-
-#Setup Disk space for external libs and working directory
-if params.intellibs:
-    ilbspc2 = pc2.Blockstore( "intellibbspc2", params.intelmountpt )
-    ilbspc2.dataset = params.INTEL_LIBS_URN
-    ilbspc2.size = "32GB"
-    ilbspc2.placement = "sysvol"
-
-bss2 = pc2.Blockstore("pc2scratch2","/scratch")
-bss2.size = "200GB"
-bss2.placement = "nonsysvol"
-
-# link interfaces of the two PCs
-# pclink = request.Link("pclink", members=[if2pc1,if2pc2])
-# pclink.setJumboFrames()
-# pclink.setNoBandwidthShaping()
-# pclink.best_effort = True
 
 
 # LAN connecting up everything (if needed).  Members are added below.
 mmimolan = None
-uelan = None
 
 
 # Request a Faros BS.
@@ -278,23 +232,6 @@ if len(params.mmimo_devices):
         for j in range(params.hubints):
             mmif = mm.addInterface()
             mmimolan.addInterface(mmif)
-
-if len(params.ue_devices):
-    uelan = request.LAN("uelan")
-    uelan.latency = 0
-    uelan.vlan_tagging = False
-    uelan.setNoBandwidthShaping()
-    uelan.addInterface(if1pc2)
-
-# if len(params.ue_devices):
-    # uelan = mmimolan
-    for i, uedev in enumerate(params.ue_devices):
-        ue = request.RawPC("usrp%d" % i)
-        ue.component_id = uedev.ueid
-        ue.hardware_type = USRPHWTYPE
-        ueif = ue.addInterface()
-        uelan.addInterface(ueif)
-
 
 
 # Add frequency request(s)
