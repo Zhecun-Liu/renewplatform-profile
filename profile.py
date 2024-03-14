@@ -200,7 +200,9 @@ STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
 pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
-if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+if1pc1 = pc1.addInterface()
+if1pc1.addAddress(pg.IPv4Address("192.168.1.1", "255.255.255.0"))
+# if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 # 40 Gbs good for d840 only
 if params.pchwtype == "d840":
     if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
