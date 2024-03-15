@@ -25,7 +25,7 @@ do
   loop_ctr=`expr $loop_ctr + 1`
 done
 
-if [ $(grep -csi $RENEW_WD /etc/fstab) -qe 0 ]
+if [ $(grep -csi $RENEW_WD /etc/fstab) -eq 0 ]
 then
   echo "Working Directory ($RENEW_WD) does not exist"
   exit 1
