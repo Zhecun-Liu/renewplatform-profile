@@ -108,7 +108,7 @@ pc.defineStructParameter(
     "lab_clients", "Lab Iris Clients", [],
     multiValue=True,
     # min=1,
-    min=0
+    min=0,
     multiValueTitle="Iris Lab clients to allocate.",
     members=[
         portal.Parameter(
