@@ -248,12 +248,12 @@ if params.roofclients:
     # Enable connectivity to shared vlan with rooftop Irises
     lan1.connectSharedVlan(SHVLAN_NAME)
 
-for i, irisdev in enumerate(params.lab_clients):
-    labir = request.RawPC("ir%d" % i)
-    labir.hardware_type = IRISHWTYPE
-    labir.component_id = irisdev.irisid
-    labif = labir.addInterface()
-    lan1.addInterface(labif)
+# for i, irisdev in enumerate(params.lab_clients):
+#     labir = request.RawPC("ir%d" % i)
+#     labir.hardware_type = IRISHWTYPE
+#     labir.component_id = irisdev.irisid
+#     labif = labir.addInterface()
+#     lan1.addInterface(labif)
 
 # Add frequency request(s)
 for frange in params.freq_ranges:
