@@ -50,8 +50,8 @@ MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors Rooftop Array"),
                     ("mmimo1-meb","MEB Rooftop Array"),
                     ("mmimo1-ustar","USTAR Rooftop Array")]
 
-LAB_CLIENTS = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
-                   ("irisclients2-meb", "MEB Rooftop Clients Site2")]
+# LAB_CLIENTS = ["", ("irisclients1-meb", "MEB Rooftop Clients Site1"),
+#                    ("irisclients2-meb", "MEB Rooftop Clients Site2")]
 
 #
 # Profile parameters.
@@ -107,7 +107,8 @@ pc.defineStructParameter(
 pc.defineStructParameter(
     "lab_clients", "Lab Iris Clients", [],
     multiValue=True,
-    min=1,
+    # min=1,
+    min=0
     multiValueTitle="Iris Lab clients to allocate.",
     members=[
         portal.Parameter(
