@@ -104,18 +104,17 @@ pc.defineStructParameter(
         ),
     ])
 
-pc.defineStructParameter(
-    "lab_clients", "Lab Iris Clients", [],
-    multiValue=True,
-    # min=1,
-    min=0,
-    multiValueTitle="Iris Lab clients to allocate.",
-    members=[
-        portal.Parameter(
-            "irisid", "ID of iris client to allocate.",
-            portal.ParameterType.STRING, LAB_CLIENTS[0], LAB_CLIENTS
-        ),
-    ])
+# pc.defineStructParameter(
+#     "lab_clients", "Lab Iris Clients", [],
+#     multiValue=True,
+#     min=1,
+#     multiValueTitle="Iris Lab clients to allocate.",
+#     members=[
+#         portal.Parameter(
+#             "irisid", "ID of iris client to allocate.",
+#             portal.ParameterType.STRING, LAB_CLIENTS[0], LAB_CLIENTS
+#         ),
+#     ])
 
 
 pc.defineParameter("roofclients", "Allocate rooftop Iris client radios.",
