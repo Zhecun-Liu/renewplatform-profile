@@ -35,9 +35,9 @@ MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
                 ("mmimo1-ustar", "USTAR")]
 
 UE = ["", ("iris1-mme1", "#1 Iris UE at MEB Rooftop Client Site 1"),
-      ("iris1-mme1", "#1 Iris UE at MEB Rooftop Client Site 1"),
+      ("iris1-mme1", "#2 Iris UE at MEB Rooftop Client Site 1"),
       ("iris1-mme2", "#1 Iris UE at MEB Rooftop Client Site 2"),
-      ("iris2-mme2", "#1 Iris UE at MEB Rooftop Client Site 2")]
+      ("iris2-mme2", "#2 Iris UE at MEB Rooftop Client Site 2")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
