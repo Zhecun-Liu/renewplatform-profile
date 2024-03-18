@@ -301,8 +301,8 @@ if len(params.ue_devices):
 
 
 # Add frequency request(s)
-# for frange in params.freq_ranges:
-#     request.requestSpectrum(frange.freq_min, frange.freq_max, 100)
+for frange in params.freq_ranges:
+    request.requestSpectrum(frange.freq_min, frange.freq_max, 100)
 
 # Print the RSpec to the enclosing page.
 pc.printRequestRSpec()
