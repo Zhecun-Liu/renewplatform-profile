@@ -29,23 +29,18 @@ MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
 # IRISHWTYPE = "iris030"
-USRPHWTYPE = "x310"
+# USRPHWTYPE = "x310"
 PCHWBS = "d840"
 PCHWUSER = "d740"
 
-
-
-# MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
-#                 ("mmimo1-meb", "MEB"),
-#                 ("mmimo1-ustar", "USTAR")]
 MMIMO_ARRAYS = ["",
                 ("mmimo1-meb", "MEB")]
 
-
-UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
-      ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)"),
-      ("WEB nuc2", "WEB Ground Level Fixed Endpoint (NUC 2)"),
-      ("cbrssdr1-meb", "MEB Rooftop USRP")]
+# There's no UE in irisNet branch
+# UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
+#       ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)"),
+#       ("WEB nuc2", "WEB Ground Level Fixed Endpoint (NUC 2)"),
+#       ("cbrssdr1-meb", "MEB Rooftop USRP")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
@@ -92,17 +87,17 @@ pc.defineStructParameter(
 #         ),
 #     ])
 
-pc.defineStructParameter(
-    "ue_devices", "UE Device", [],
-    multiValue=True,
-    min=1,
-    multiValueTitle="UE clients to allocate.",
-    members=[
-        portal.Parameter(
-            "ueid", "UE site location",
-            portal.ParameterType.STRING, UE[0], UE
-        ),
-    ])
+# pc.defineStructParameter(
+#     "ue_devices", "UE Device", [],
+#     multiValue=True,
+#     min=1,
+#     multiValueTitle="UE clients to allocate.",
+#     members=[
+#         portal.Parameter(
+#             "ueid", "UE site location",
+#             portal.ParameterType.STRING, UE[0], UE
+#         ),
+#     ])
 
 #Typical Options
 pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
@@ -133,9 +128,9 @@ pc.defineParameter("pchwtype", "PC Hardware Type",
 #                    portal.ParameterType.STRING, "", advanced=True,
 #                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
-pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
-                   portal.ParameterType.STRING, "", advanced=True,
-                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
+# pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+#                    portal.ParameterType.STRING, "", advanced=True,
+#                    longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
@@ -162,12 +157,12 @@ request.initVNC()
 # pc1 = request.RawPC("pc1")
 # pc1.startVNC()
 
-# if params.fixedpc1id:
-#     pc1.component_id=params.fixedpc1id
-# else:
-#     # pc1.hardware_type = params.pchwtype
-#     pc1.hardware_type = PCHWBS
-# pc1.disk_image = PCIMG
+if params.fixedpc1id:
+    pc1.component_id=params.fixedpc1id
+else:
+    pc1.hardware_type = params.pchwtype
+    # pc1.hardware_type = PCHWBS
+pc1.disk_image = PCIMG
 
 # #Setup Disk space for external libs and working directory
 # if params.intellibs:
@@ -205,13 +200,15 @@ CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
 # pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
 # pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
+if1pc1 = pc1.addInterface()
+if1pc1.addAddress(pg.IPv4Address("192.168.1.1", "255.255.255.0"))
 # if1pc1 = pc1.addInterface("if1pc1", pg.IPv4Address("192.168.1.1", "255.255.255.0"))
-# # 40 Gbs good for d840 only
-# if params.pchwtype == "d840":
-#     if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
-# else:
-#     if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
-# if1pc1.latency = 0
+# 40 Gbs good for d840 only
+if params.pchwtype == "d840":
+    if1pc1.bandwidth = 40 * 1000 * 1000 # 40 Gbps
+else:
+    if1pc1.bandwidth = 10 * 1000 * 1000 # 10 Gbps
+if1pc1.latency = 0
 
 # # interface 2 - pclink
 # if2pc1 = pc1.addInterface("if2pc1", pg.IPv4Address("192.168.2.1", "255.255.255.0"))
@@ -261,7 +258,7 @@ bss2.placement = "nonsysvol"
 
 
 # LAN connecting up everything (if needed).  Members are added below.
-# mmimolan = None
+mmimolan = None
 uelan = None
 
 
@@ -283,23 +280,6 @@ uelan = None
 #         for j in range(params.hubints):
 #             mmif = mm.addInterface()
 #             mmimolan.addInterface(mmif)
-
-if len(params.ue_devices):
-    uelan = request.LAN("uelan")
-    uelan.latency = 0
-    uelan.vlan_tagging = False
-    uelan.setNoBandwidthShaping()
-    uelan.addInterface(if1pc2)
-
-# if len(params.ue_devices):
-    # uelan = mmimolan
-    for i, uedev in enumerate(params.ue_devices):
-        ue = request.RawPC("usrp%d" % i)
-        ue.component_id = uedev.ueid
-        ue.hardware_type = USRPHWTYPE
-        ueif = ue.addInterface()
-        uelan.addInterface(ueif)
-
 
 
 # Add frequency request(s)
