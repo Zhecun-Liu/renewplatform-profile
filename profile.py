@@ -28,19 +28,19 @@ RENEW_WD = "/scratch"
 MATLAB_MP = "/usr/local/MATLAB"
 STARTUP_SCRIPT = "/local/repository/renew_start.sh"
 FAROSHWTYPE = "faros_sfp"
-# IRISHWTYPE = "iris030"
-# USRPHWTYPE = "x310"
+IRISHWTYPE = "iris030"
+USRPHWTYPE = "x310"
 PCHWBS = "d840"
 PCHWUSER = "d740"
 
-MMIMO_ARRAYS = ["",
-                ("mmimo1-meb", "MEB")]
+MMIMO_ARRAYS = ["", ("mmimo1-honors", "Honors"),
+                ("mmimo1-meb", "MEB"),
+                ("mmimo1-ustar", "USTAR")]
 
-# There's no UE in irisNet branch
-# UE = ["", ("irisclients1-meb", "MEB Rooftop Clients Site 1 (2 Iris UEs)"),
-#       ("irisclients2-meb", "MEB Rooftop Clients Site 2 (2 Iris UEs)"),
-#       ("WEB nuc2", "WEB Ground Level Fixed Endpoint (NUC 2)"),
-#       ("cbrssdr1-meb", "MEB Rooftop USRP")]
+UE = ["", ("iris1-mme1", "#1 Iris UE at MEB Rooftop Client Site 1"),
+      ("iris1-mme1", "#2 Iris UE at MEB Rooftop Client Site 1"),
+      ("iris1-mme2", "#1 Iris UE at MEB Rooftop Client Site 2"),
+      ("iris2-mme2", "#2 Iris UE at MEB Rooftop Client Site 2")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
                  ("d740", "D740 - Mid"),
@@ -74,30 +74,30 @@ pc.defineStructParameter(
         ),
     ])
 
-# Array to allocate
-# pc.defineStructParameter(
-#     "mmimo_devices", "mMIMO Device", [],
-#     multiValue=True,
-#     min=1,
-#     multiValueTitle="Massive MIMO basestations to allocate.",
-#     members=[
-#         portal.Parameter(
-#             "mmimoid", "Array site location",
-#             portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
-#         ),
-#     ])
+Array to allocate
+pc.defineStructParameter(
+    "mmimo_devices", "mMIMO Device", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="Massive MIMO basestations to allocate.",
+    members=[
+        portal.Parameter(
+            "mmimoid", "Array site location",
+            portal.ParameterType.STRING, MMIMO_ARRAYS[0], MMIMO_ARRAYS
+        ),
+    ])
 
-# pc.defineStructParameter(
-#     "ue_devices", "UE Device", [],
-#     multiValue=True,
-#     min=1,
-#     multiValueTitle="UE clients to allocate.",
-#     members=[
-#         portal.Parameter(
-#             "ueid", "UE site location",
-#             portal.ParameterType.STRING, UE[0], UE
-#         ),
-#     ])
+pc.defineStructParameter(
+    "ue_devices", "UE Device", [],
+    multiValue=True,
+    min=1,
+    multiValueTitle="UE clients to allocate.",
+    members=[
+        portal.Parameter(
+            "ueid", "UE site location",
+            portal.ParameterType.STRING, UE[0], UE
+        ),
+    ])
 
 #Typical Options
 pc.defineParameter("matlabds", "Attach the Matlab dataset to the compute host.",
@@ -124,13 +124,13 @@ pc.defineParameter("pchwtype", "PC Hardware Type",
                    PC_HWTYPE_SEL[2], PC_HWTYPE_SEL, advanced=True,
                    longDescription="Select the PC Hardware Type for RENEW software")
 
-# pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
-#                    portal.ParameterType.STRING, "", advanced=True,
-#                    longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
+pc.defineParameter("fixedpc1id", "Fixed PC1 Node id (Optional)",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Fix 'pc1' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
-# pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
-#                    portal.ParameterType.STRING, "", advanced=True,
-#                    longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
+pc.defineParameter("fixedpc2id", "Fixed PC2 Node id (Optional)",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Fix 'pc2' to this specific node.  Leave blank to allow for any available node of the correct type.")
 
 
 # Bind and verify parameters.
@@ -153,9 +153,9 @@ request = pc.makeRequestRSpec()
 # VNC - initialize
 request.initVNC()
 
-# # Request PC1
-# pc1 = request.RawPC("pc1")
-# pc1.startVNC()
+# Request PC1
+pc1 = request.RawPC("pc1")
+pc1.startVNC()
 
 if params.fixedpc1id:
     pc1.component_id=params.fixedpc1id
@@ -164,41 +164,41 @@ else:
     # pc1.hardware_type = PCHWBS
 pc1.disk_image = PCIMG
 
-# #Setup Disk space for external libs and working directory
-# if params.intellibs:
-#     ilbspc1 = pc1.Blockstore( "intellibbspc1", params.intelmountpt )
-#     ilbspc1.dataset = params.INTEL_LIBS_URN
-#     ilbspc1.size = "32GB"
-#     ilbspc1.placement = "sysvol"
+#Setup Disk space for external libs and working directory
+if params.intellibs:
+    ilbspc1 = pc1.Blockstore( "intellibbspc1", params.intelmountpt )
+    ilbspc1.dataset = params.INTEL_LIBS_URN
+    ilbspc1.size = "32GB"
+    ilbspc1.placement = "sysvol"
 
-# if params.matlabds:
-#     mlbs = pc1.Blockstore( "matlabpc1", MATLAB_MP )
-#     mlbs.dataset = MATLAB_DS_URN
-#     mlbs.placement = "nonsysvol"
+if params.matlabds:
+    mlbs = pc1.Blockstore( "matlabpc1", MATLAB_MP )
+    mlbs.dataset = MATLAB_DS_URN
+    mlbs.placement = "nonsysvol"
 
-# bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
-# #Matlab dataset ~30GB
-# #740 Only has 2x240GB Sata Drives (use 1 for sysvol)
-# if params.pchwtype == "d740":
-#     bss1.size = "200GB"
-# #840 has 4x1.6TB NVMEe SSD drives
-# #430 1 200GB SSD, 2x1TB 7200 rpm SATA
-# else:
-#     bss1.size = "900GB"
-# #place this on the nonsystem disk
-# bss1.placement = "nonsysvol"
+bss1 = pc1.Blockstore("pc1wd", RENEW_WD)
+#Matlab dataset ~30GB
+#740 Only has 2x240GB Sata Drives (use 1 for sysvol)
+if params.pchwtype == "d740":
+    bss1.size = "200GB"
+#840 has 4x1.6TB NVMEe SSD drives
+#430 1 200GB SSD, 2x1TB 7200 rpm SATA
+else:
+    bss1.size = "900GB"
+#place this on the nonsystem disk
+bss1.placement = "nonsysvol"
 
-# if len(params.mmimo_devices):
-#     DISABLE_DHCP="false"
-# else:
-#     DISABLE_DHCP="true"
+if len(params.mmimo_devices):
+    DISABLE_DHCP="false"
+else:
+    DISABLE_DHCP="true"
 
 # #Add the startup scripts
 CHMOD_STARTUP = "sudo chmod 775 " + STARTUP_SCRIPT
-# # pc1 is for mmimo dev, DHCP should be enabled
-# STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
-# pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
-# pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
+# pc1 is for mmimo dev, DHCP should be enabled
+STARTUP_COMMAND = STARTUP_SCRIPT + " " + "false"
+pc1.addService(pg.Execute(shell="sh", command=CHMOD_STARTUP))
+pc1.addService(pg.Execute(shell="sh", command=STARTUP_COMMAND))
 
 if1pc1 = pc1.addInterface()
 if1pc1.addAddress(pg.IPv4Address("192.168.1.1", "255.255.255.0"))
@@ -263,23 +263,23 @@ uelan = None
 
 
 # Request a Faros BS.
-# if len(params.mmimo_devices):
-#     mmimolan = request.LAN("mmimolan")
-#     #mmimolan.best_effort = True
-#     mmimolan.latency = 0
-#     mmimolan.vlan_tagging = False
-#     mmimolan.setNoBandwidthShaping()
-#     #mmimolan.setNoInterSwitchLinks()
-#     mmimolan.addInterface(if1pc1)
+if len(params.mmimo_devices):
+    mmimolan = request.LAN("mmimolan")
+    #mmimolan.best_effort = True
+    mmimolan.latency = 0
+    mmimolan.vlan_tagging = False
+    mmimolan.setNoBandwidthShaping()
+    #mmimolan.setNoInterSwitchLinks()
+    mmimolan.addInterface(if1pc1)
 
-#     # Request all Faros BSes requested
-#     for i, mmimodev in enumerate(params.mmimo_devices):
-#         mm = request.RawPC("mm%d" % i)
-#         mm.component_id = mmimodev.mmimoid
-#         mm.hardware_type = FAROSHWTYPE
-#         for j in range(params.hubints):
-#             mmif = mm.addInterface()
-#             mmimolan.addInterface(mmif)
+    # Request all Faros BSes requested
+    for i, mmimodev in enumerate(params.mmimo_devices):
+        mm = request.RawPC("mm%d" % i)
+        mm.component_id = mmimodev.mmimoid
+        mm.hardware_type = FAROSHWTYPE
+        for j in range(params.hubints):
+            mmif = mm.addInterface()
+            mmimolan.addInterface(mmif)
 
 
 # Add frequency request(s)
