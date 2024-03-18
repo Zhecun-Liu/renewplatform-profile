@@ -221,7 +221,7 @@ pc2 = request.RawPC("pc2")
 if params.fixedpc2id:
     pc2.component_id=params.fixedpc2id
 else:
-    pc2.hardware_type = params.pchwtype
+    pc2.hardware_type = PCHWUSER
 pc2.disk_image = PCIMG
 
 #Add the startup scripts
