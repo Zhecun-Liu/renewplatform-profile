@@ -74,7 +74,7 @@ pc.defineStructParameter(
         ),
     ])
 
-Array to allocate
+# Array to allocate
 pc.defineStructParameter(
     "mmimo_devices", "mMIMO Device", [],
     multiValue=True,
