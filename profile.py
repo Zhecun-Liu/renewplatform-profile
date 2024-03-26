@@ -42,6 +42,7 @@ UE = ["", ("iris1-mme1", "#1 Iris UE at MEB Rooftop Client Site 1"),
       ("iris1-mme2", "#1 Iris UE at MEB Rooftop Client Site 2"),
       ("cbrssdr1-meb", "MEB Rooftop USRP"),
       ("cbrssdr1-honors", "Honors Rooftop USRP"),
+      ("cbrssdr1-ustar", "Ustar Rooftop USRP"),
       ("iris2-mme2", "#2 Iris UE at MEB Rooftop Client Site 2")]
 
 PC_HWTYPE_SEL = [("d430", "D430 - Min"),
